@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Avatar {
+  id          Int        @id
+  user_id     Int?
+  avatar_path String?    @db.VarChar(255)
+  NguoiDung   NguoiDung? @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Avatar_ibfk_1")
+
+  @@index([user_id], map: "user_id")
+}
+
+model BinhLuan {
+  id                 Int        @id
+  ma_phong           Int?
+  ma_nguoi_binh_luan Int?
+  ngay_binh_luan     DateTime?  @db.DateTime(0)
+  noi_dung           String?    @db.Text
+  sao_binh_luan      Int?
+  Phong              Phong?     @relation(fields: [ma_phong], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "BinhLuan_ibfk_1")
+  NguoiDung          NguoiDung? @relation(fields: [ma_nguoi_binh_luan], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "BinhLuan_ibfk_2")
+
+  @@index([ma_nguoi_binh_luan], map: "ma_nguoi_binh_luan")
+  @@index([ma_phong], map: "ma_phong")
+}
+
+model DatPhong {
+  id             Int        @id
+  ma_phong       Int?
+  ngay_den       DateTime?  @db.DateTime(0)
+  ngay_di        DateTime?  @db.DateTime(0)
+  so_luong_khach Int?
+  ma_nguoi_dat   Int?
+  Phong          Phong?     @relation(fields: [ma_phong], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "DatPhong_ibfk_1")
+  NguoiDung      NguoiDung? @relation(fields: [ma_nguoi_dat], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "DatPhong_ibfk_2")
+
+  @@index([ma_nguoi_dat], map: "ma_nguoi_dat")
+  @@index([ma_phong], map: "ma_phong")
+}
+
+model HinhPhong {
+  id         Int     @id
+  phong_id   Int?
+  image_path String? @db.VarChar(255)
+  Phong      Phong?  @relation(fields: [phong_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "HinhPhong_ibfk_1")
+
+  @@index([phong_id], map: "phong_id")
+}
+
+model HinhViTri {
+  id         Int     @id
+  vi_tri_id  Int?
+  image_path String? @db.VarChar(255)
+  ViTri      ViTri?  @relation(fields: [vi_tri_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "HinhViTri_ibfk_1")
+
+  @@index([vi_tri_id], map: "vi_tri_id")
+}
+
+model NguoiDung {
+  id        Int        @id
+  name      String?    @db.VarChar(255)
+  email     String?    @unique(map: "email") @db.VarChar(255)
+  pass_word String?    @db.VarChar(255)
+  phone     String?    @db.VarChar(255)
+  birth_day DateTime?  @db.Date
+  gender    String?    @db.VarChar(255)
+  role      String?    @db.VarChar(255)
+  Avatar    Avatar[]
+  BinhLuan  BinhLuan[]
+  DatPhong  DatPhong[]
+}
+
+model Phong {
+  id        Int         @id
+  ten_phong String?     @db.VarChar(255)
+  khach     Int?
+  phong_ngu Int?
+  giuong    Int?
+  phong_tam Int?
+  mo_ta     String?     @db.Text
+  gia_tien  Int?
+  may_giat  Boolean?
+  ban_la    Boolean?
+  tivi      Boolean?
+  dieu_hoa  Boolean?
+  wifi      Boolean?
+  bep       Boolean?
+  do_xe     Boolean?
+  ho_boi    Boolean?
+  ban_ui    Boolean?
+  BinhLuan  BinhLuan[]
+  DatPhong  DatPhong[]
+  HinhPhong HinhPhong[]
+}
+
+model ViTri {
+  id         Int         @id
+  ten_vi_tri String?     @db.VarChar(255)
+  tinh_thanh String?     @db.VarChar(255)
+  quoc_gia   Int?
+  HinhViTri  HinhViTri[]
+}
