@@ -18,7 +18,9 @@ export class AuthService {
 
   async signin(
     body: SigninDto,
-  ): Promise<{ statusCode: string; token: string; accessToken: string }> {
+  ): Promise<
+    { statusCode: string; token: string; accessToken: string } | string
+  > {
     try {
       const { email, pass_word } = body;
 
@@ -27,13 +29,13 @@ export class AuthService {
       });
 
       if (!checkUser) {
-        return { statusCode: 'NOT_FOUND', token: '', accessToken: '' };
+        return 'NOT_FOUND';
       }
 
       let checkPass = bcrypt.compareSync(pass_word, checkUser.pass_word);
 
       if (!checkPass) {
-        return { statusCode: 'UNAUTHORIZED', token: '', accessToken: '' };
+        return 'UNAUTHORIZED';
       }
 
       const token = this.jwtService.sign(
