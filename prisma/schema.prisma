@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Avatar {
-  id          Int        @id
+  id          Int        @id @default(autoincrement())
   user_id     Int?
   avatar_path String?    @db.VarChar(255)
   NguoiDung   NguoiDung? @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Avatar_ibfk_1")
@@ -17,7 +17,7 @@ model Avatar {
 }
 
 model BinhLuan {
-  id                 Int        @id
+  id                 Int        @id @default(autoincrement())
   ma_phong           Int?
   ma_nguoi_binh_luan Int?
   ngay_binh_luan     DateTime?  @db.DateTime(0)
@@ -31,7 +31,7 @@ model BinhLuan {
 }
 
 model DatPhong {
-  id             Int        @id
+  id             Int        @id @default(autoincrement())
   ma_phong       Int?
   ngay_den       DateTime?  @db.DateTime(0)
   ngay_di        DateTime?  @db.DateTime(0)
@@ -45,7 +45,7 @@ model DatPhong {
 }
 
 model HinhPhong {
-  id         Int     @id
+  id         Int     @id @default(autoincrement())
   phong_id   Int?
   image_path String? @db.VarChar(255)
   Phong      Phong?  @relation(fields: [phong_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "HinhPhong_ibfk_1")
@@ -54,7 +54,7 @@ model HinhPhong {
 }
 
 model HinhViTri {
-  id         Int     @id
+  id         Int     @id @default(autoincrement())
   vi_tri_id  Int?
   image_path String? @db.VarChar(255)
   ViTri      ViTri?  @relation(fields: [vi_tri_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "HinhViTri_ibfk_1")
@@ -63,7 +63,7 @@ model HinhViTri {
 }
 
 model NguoiDung {
-  id        Int        @id
+  id        Int        @id @default(autoincrement())
   name      String?    @db.VarChar(255)
   email     String?    @unique(map: "email") @db.VarChar(255)
   pass_word String?    @db.VarChar(255)
@@ -77,7 +77,7 @@ model NguoiDung {
 }
 
 model Phong {
-  id        Int         @id
+  id        Int         @id @default(autoincrement())
   ten_phong String?     @db.VarChar(255)
   khach     Int?
   phong_ngu Int?
@@ -100,7 +100,7 @@ model Phong {
 }
 
 model ViTri {
-  id         Int         @id
+  id         Int         @id @default(autoincrement())
   ten_vi_tri String?     @db.VarChar(255)
   tinh_thanh String?     @db.VarChar(255)
   quoc_gia   Int?

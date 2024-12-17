@@ -1,7 +1,7 @@
 CREATE TABLE NguoiDung (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255),
-    email VARCHAR(255) UNIQUE, -- Đảm bảo tính duy nhất của email
+    email VARCHAR(255) UNIQUE,
     pass_word VARCHAR(255),
     phone VARCHAR(255),
     birth_day DATE,
@@ -10,7 +10,7 @@ CREATE TABLE NguoiDung (
 );
 
 CREATE TABLE DatPhong (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     ma_phong INT,
     ngay_den DATETIME,
     ngay_di DATETIME,
@@ -21,13 +21,13 @@ CREATE TABLE DatPhong (
 );
 
 CREATE TABLE Phong (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     ten_phong VARCHAR(255),
     khach INT,
     phong_ngu INT,
     giuong INT,
     phong_tam INT,
-    mo_ta TEXT, -- Sử dụng TEXT cho trường mô tả dài
+    mo_ta TEXT,
     gia_tien INT,
     may_giat BOOLEAN,
     ban_la BOOLEAN,
@@ -41,15 +41,15 @@ CREATE TABLE Phong (
 );
 
 CREATE TABLE ViTri (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     ten_vi_tri VARCHAR(255),
     tinh_thanh VARCHAR(255),
-    quoc_gia INT -- Kiểm tra lại kiểu dữ liệu cho quốc gia
+    quoc_gia INT
 );
 
 CREATE TABLE BinhLuan (
-    id INT PRIMARY KEY,
-    ma_phong INT, -- Thay đổi thành ma_phong
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    ma_phong INT,
     ma_nguoi_binh_luan INT,
     ngay_binh_luan DATETIME,
     noi_dung TEXT,
@@ -59,21 +59,21 @@ CREATE TABLE BinhLuan (
 );
 
 CREATE TABLE Avatar (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
     avatar_path VARCHAR(255),
     FOREIGN KEY (user_id) REFERENCES NguoiDung(id)
 );
 
 CREATE TABLE HinhPhong (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     phong_id INT,
     image_path VARCHAR(255),
     FOREIGN KEY (phong_id) REFERENCES Phong(id)
 );
 
 CREATE TABLE HinhViTri (
-    id INT PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     vi_tri_id INT,
     image_path VARCHAR(255),
     FOREIGN KEY (vi_tri_id) REFERENCES ViTri(id)
