@@ -38,7 +38,7 @@ export class AuthController {
       } else {
         switch (login.statusCode) {
           case 'OK':
-            res.cookie('access_token', login.accessToken, {
+            res.cookie('accessToken', login.accessToken, {
               httpOnly: true,
               secure: process.env.NODE_ENV === 'production',
               maxAge: 7 * 24 * 60 * 60 * 1000,
