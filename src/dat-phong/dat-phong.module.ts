@@ -15,6 +15,7 @@ export class DatPhongModule implements NestModule {
       .forRoutes(
         { path: '/dat-phong', method: RequestMethod.GET },
         { path: '/dat-phong', method: RequestMethod.POST },
+        { path: '/dat-phong/:id', method: RequestMethod.GET },
       );
   }
 }

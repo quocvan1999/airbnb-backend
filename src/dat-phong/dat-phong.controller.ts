@@ -3,13 +3,14 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Param,
   Post,
   Query,
   Req,
   Res,
 } from '@nestjs/common';
 import { DatPhongService } from './dat-phong.service';
-import { ApiHeader, ApiQuery } from '@nestjs/swagger';
+import { ApiHeader, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { Response } from 'express';
 import { DatPhongDto } from './dto/dat-phong.dto';
 import { CreateDatPhongDto } from './dto/create-dat-phong.dto';
@@ -125,6 +126,50 @@ export class DatPhongController {
           });
         default:
           break;
+      }
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        content: { message: 'Internal Server Error' },
+        error: error?.message || 'Internal Server Error',
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
+
+  @Get(':id')
+  @ApiParam({ name: 'id', type: Number })
+  @ApiHeader({ name: 'token', required: true })
+  async getCommentsById(
+    @Param('id') id: string,
+    @Res() res: Response,
+  ): Promise<Response> {
+    try {
+      const booking: DatPhongDto | string =
+        await this.datPhongService.getCommentsById(Number(id));
+
+      if (typeof booking === 'string') {
+        switch (booking) {
+          case 'NOT_FOUND':
+            return res.status(HttpStatus.NOT_FOUND).json({
+              statusCode: HttpStatus.NOT_FOUND,
+              content: {
+                message: 'Không tìm thấy đặt phòng',
+              },
+              timestamp: new Date().toISOString(),
+            });
+          default:
+            break;
+        }
+      } else {
+        return res.status(HttpStatus.OK).json({
+          statusCode: HttpStatus.OK,
+          content: {
+            message: 'Lấy thông tin đặt phòng thành công',
+            data: booking,
+          },
+          timestamp: new Date().toISOString(),
+        });
       }
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({

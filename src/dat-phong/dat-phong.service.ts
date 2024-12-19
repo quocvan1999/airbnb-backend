@@ -77,4 +77,20 @@ export class DatPhongService {
       throw new Error(error.message);
     }
   }
+
+  async getCommentsById(id: number): Promise<DatPhongDto | string> {
+    try {
+      const booking = await this.prisma.datPhong.findUnique({
+        where: { id },
+      });
+
+      if (!booking) {
+        return 'NOT_FOUND';
+      }
+
+      return booking;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 }
