@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { BinhLuanDto } from './dto/binh-luan.dto';
 import { CreateBinhLuanDto } from './dto/create-binh-luan.dto';
+import { UpdateBinhLuanDto } from './dto/update-binh-luan.dto';
 
 @Injectable()
 export class BinhLuanService {
@@ -73,6 +74,39 @@ export class BinhLuanService {
       }
 
       return 'CREATED';
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async updateComment(body: UpdateBinhLuanDto, id: number): Promise<string> {
+    try {
+      const checkComment = await this.prisma.binhLuan.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!checkComment) {
+        return 'COMMENT_NOT_FOUND';
+      }
+
+      const update = await this.prisma.binhLuan.update({
+        where: {
+          id,
+        },
+        data: {
+          ngay_binh_luan: body.ngay_binh_luan,
+          noi_dung: body.noi_dung,
+          sao_binh_luan: body.sao_binh_luan,
+        },
+      });
+
+      if (!update) {
+        return 'BAD_REQUEST';
+      }
+
+      return 'OK';
     } catch (error) {
       throw new Error(error.message);
     }

@@ -16,6 +16,9 @@ export class BinhLuanModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
-      .forRoutes({ path: '/binh-luan', method: RequestMethod.POST });
+      .forRoutes(
+        { path: '/binh-luan', method: RequestMethod.POST },
+        { path: '/binh-luan', method: RequestMethod.PUT },
+      );
   }
 }

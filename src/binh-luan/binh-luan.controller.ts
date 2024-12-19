@@ -7,13 +7,15 @@ import {
   Post,
   Req,
   Body,
-  Patch,
+  Put,
+  Param,
 } from '@nestjs/common';
 import { BinhLuanService } from './binh-luan.service';
-import { ApiHeader, ApiQuery } from '@nestjs/swagger';
+import { ApiHeader, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { Response } from 'express';
 import { BinhLuanDto } from './dto/binh-luan.dto';
 import { CreateBinhLuanDto } from './dto/create-binh-luan.dto';
+import { UpdateBinhLuanDto } from './dto/update-binh-luan.dto';
 
 @Controller('binh-luan')
 export class BinhLuanController {
@@ -136,13 +138,55 @@ export class BinhLuanController {
     }
   }
 
-  @Patch(':id')
+  @Put(':id')
+  @ApiParam({ name: 'id', type: Number })
   @ApiHeader({ name: 'token', required: true })
   async updateComment(
-    @Body() body: CreateBinhLuanDto,
-    @Req() req: Request,
+    @Body() body: UpdateBinhLuanDto,
+    @Param('id') id: string,
     @Res() res: Response,
   ): Promise<Response> {
-    return res.status(200);
+    try {
+      const update: string = await this.binhLuanService.updateComment(
+        body,
+        Number(id),
+      );
+
+      switch (update) {
+        case 'COMMENT_NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Bình luận không tồn tại',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'BAD_REQUEST':
+          return res.status(HttpStatus.BAD_REQUEST).json({
+            statusCode: HttpStatus.BAD_REQUEST,
+            content: {
+              message: 'Cập nhật bình luận không thành công',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'OK':
+          return res.status(HttpStatus.OK).json({
+            statusCode: HttpStatus.OK,
+            content: {
+              message: 'Cập nhật bình luận thành công',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        default:
+          break;
+      }
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        content: { message: 'Internal Server Error' },
+        error: error?.message || 'Internal Server Error',
+        timestamp: new Date().toISOString(),
+      });
+    }
   }
 }
