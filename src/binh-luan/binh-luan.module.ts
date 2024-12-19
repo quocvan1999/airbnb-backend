@@ -18,7 +18,8 @@ export class BinhLuanModule implements NestModule {
       .apply(AuthMiddleware)
       .forRoutes(
         { path: '/binh-luan', method: RequestMethod.POST },
-        { path: '/binh-luan', method: RequestMethod.PUT },
+        { path: '/binh-luan/:id', method: RequestMethod.PUT },
+        { path: '/binh-luan/:id', method: RequestMethod.DELETE },
       );
   }
 }

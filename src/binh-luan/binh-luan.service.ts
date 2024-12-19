@@ -79,11 +79,15 @@ export class BinhLuanService {
     }
   }
 
-  async updateComment(body: UpdateBinhLuanDto, id: number): Promise<string> {
+  async updateComment(
+    body: UpdateBinhLuanDto,
+    comment_id: number,
+    req: Request,
+  ): Promise<string> {
     try {
       const checkComment = await this.prisma.binhLuan.findUnique({
         where: {
-          id,
+          id: comment_id,
         },
       });
 
@@ -91,9 +95,29 @@ export class BinhLuanService {
         return 'COMMENT_NOT_FOUND';
       }
 
+      const { id } = req['user'].data;
+
+      if (!id) {
+        return 'ID_NOT_FOUND';
+      }
+
+      const checkUser = await this.prisma.nguoiDung.findUnique({
+        where: {
+          id: Number(id),
+        },
+      });
+
+      if (!checkUser) {
+        return 'USER_NOT_FOUND';
+      }
+
+      if (checkComment.ma_nguoi_binh_luan !== checkUser.id) {
+        return 'UNAUTHORIZED';
+      }
+
       const update = await this.prisma.binhLuan.update({
         where: {
-          id,
+          id: comment_id,
         },
         data: {
           ngay_binh_luan: body.ngay_binh_luan,
@@ -103,6 +127,54 @@ export class BinhLuanService {
       });
 
       if (!update) {
+        return 'BAD_REQUEST';
+      }
+
+      return 'OK';
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async deleteComment(comment_id: number, req: Request): Promise<string> {
+    try {
+      const checkComment = await this.prisma.binhLuan.findUnique({
+        where: {
+          id: comment_id,
+        },
+      });
+
+      if (!checkComment) {
+        return 'COMMENT_NOT_FOUND';
+      }
+
+      const { id } = req['user'].data;
+
+      if (!id) {
+        return 'ID_NOT_FOUND';
+      }
+
+      const checkUser = await this.prisma.nguoiDung.findUnique({
+        where: {
+          id: Number(id),
+        },
+      });
+
+      if (!checkUser) {
+        return 'USER_NOT_FOUND';
+      }
+
+      if (checkComment.ma_nguoi_binh_luan !== checkUser.id) {
+        return 'UNAUTHORIZED';
+      }
+
+      const deleteCommentById = await this.prisma.binhLuan.delete({
+        where: {
+          id: comment_id,
+        },
+      });
+
+      if (!deleteCommentById) {
         return 'BAD_REQUEST';
       }
 
