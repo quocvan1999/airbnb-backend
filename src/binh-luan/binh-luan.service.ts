@@ -183,4 +183,45 @@ export class BinhLuanService {
       throw new Error(error.message);
     }
   }
+
+  async getCommentsByRoomId(
+    page: number,
+    limit: number,
+    maPhong: number,
+  ): Promise<{ data: BinhLuanDto[]; total: number } | string> {
+    try {
+      const checkRoom = await this.prisma.phong.findUnique({
+        where: { id: maPhong },
+      });
+
+      if (!checkRoom) {
+        return 'ROOM_NOT_FOUND';
+      }
+
+      const comments: BinhLuanDto[] = await this.prisma.binhLuan.findMany({
+        where: {
+          ma_phong: maPhong,
+        },
+        skip: (page - 1) * limit,
+        take: limit,
+      });
+
+      if (!comments) {
+        return 'NOT_FOUND';
+      }
+
+      const totalComment: number = await this.prisma.binhLuan.count({
+        where: {
+          ma_phong: maPhong,
+        },
+      });
+
+      return {
+        data: comments,
+        total: totalComment,
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 }
