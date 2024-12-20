@@ -91,4 +91,44 @@ export class NguoiDungService {
       throw new Error(error.message);
     }
   }
+
+  async deleteUser(id: number, req: Request): Promise<string> {
+    try {
+      const { id: userId } = req['user'].data;
+
+      if (!userId) {
+        return 'ID_NOT_FOUND';
+      }
+
+      const checkUser = await this.prisma.nguoiDung.findUnique({
+        where: {
+          id: Number(userId),
+        },
+      });
+
+      if (!checkUser) {
+        return 'USER_NOT_FOUND';
+      }
+
+      if (checkUser.role !== 'Admin') {
+        return 'FORBIDDEN';
+      }
+
+      if (id === Number(checkUser.id)) {
+        return 'FORBIDDEN';
+      }
+
+      const removeUser = await this.prisma.nguoiDung.delete({
+        where: { id },
+      });
+
+      if (!removeUser) {
+        return 'INTERNAL_SERVER_ERROR';
+      }
+
+      return 'DELETED';
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 }

@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
+  Param,
   Post,
   Query,
   Req,
@@ -10,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { NguoiDungService } from './nguoi-dung.service';
-import { ApiHeader, ApiQuery } from '@nestjs/swagger';
+import { ApiHeader, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { NguoiDungDto } from './dto/nguoi-dung.dto';
 import { CreateNguoiDungDto } from './dto/create-nguoi-dung.dto';
 
@@ -34,7 +36,11 @@ export class NguoiDungController {
       const formatSize = limit ? Number(limit) : 10;
 
       const users: { data: NguoiDungDto[]; total: number } | string =
-        await this.nguoiDungService.getNguoiDung(formatPage, formatSize, keyword);
+        await this.nguoiDungService.getNguoiDung(
+          formatPage,
+          formatSize,
+          keyword,
+        );
 
       if (typeof users === 'string') {
         switch (users) {
@@ -124,6 +130,68 @@ export class NguoiDungController {
           return res.status(HttpStatus.CREATED).json({
             statusCode: HttpStatus.CREATED,
             content: { message: 'Thêm mới tài khoản thành công' },
+            timestamp: new Date().toISOString(),
+          });
+        default:
+          break;
+      }
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        content: { message: 'Internal Server Error' },
+        error: error?.message || 'Internal Server Error',
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
+
+  @Delete(':id')
+  @ApiParam({ name: 'id', type: Number })
+  @ApiHeader({ name: 'token', required: true })
+  async deleteUser(
+    @Param('id') id: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<Response> {
+    try {
+      const deleted: string = await this.nguoiDungService.deleteUser(
+        Number(id),
+        req,
+      );
+
+      switch (deleted) {
+        case 'ID_NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Không lấy được id người dùng',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'USER_NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Người dùng không tồn tại',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'FORBIDDEN':
+          return res.status(HttpStatus.FORBIDDEN).json({
+            statusCode: HttpStatus.FORBIDDEN,
+            content: { message: 'Chỉ có Admin mới được xóa tài khoản' },
+            timestamp: new Date().toISOString(),
+          });
+        case 'INTERNAL_SERVER_ERROR':
+          return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            content: { message: 'Xóa tài khoản không thành công' },
+            timestamp: new Date().toISOString(),
+          });
+        case 'DELETED':
+          return res.status(HttpStatus.OK).json({
+            statusCode: HttpStatus.OK,
+            content: { message: 'Xóa tài khoản thành công' },
             timestamp: new Date().toISOString(),
           });
         default:

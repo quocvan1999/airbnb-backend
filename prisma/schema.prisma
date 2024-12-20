@@ -11,7 +11,7 @@ model Avatar {
   id          Int        @id @default(autoincrement())
   user_id     Int?
   avatar_path String?    @db.VarChar(255)
-  NguoiDung   NguoiDung? @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Avatar_ibfk_1")
+  NguoiDung   NguoiDung? @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "Avatar_ibfk_1")
 
   @@index([user_id], map: "user_id")
 }
@@ -23,8 +23,8 @@ model BinhLuan {
   ngay_binh_luan     DateTime?  @db.DateTime(0)
   noi_dung           String?    @db.Text
   sao_binh_luan      Int?
-  Phong              Phong?     @relation(fields: [ma_phong], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "BinhLuan_ibfk_1")
-  NguoiDung          NguoiDung? @relation(fields: [ma_nguoi_binh_luan], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "BinhLuan_ibfk_2")
+  Phong              Phong?     @relation(fields: [ma_phong], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "BinhLuan_ibfk_1")
+  NguoiDung          NguoiDung? @relation(fields: [ma_nguoi_binh_luan], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "BinhLuan_ibfk_2")
 
   @@index([ma_nguoi_binh_luan], map: "ma_nguoi_binh_luan")
   @@index([ma_phong], map: "ma_phong")
@@ -37,8 +37,8 @@ model DatPhong {
   ngay_di        DateTime?  @db.DateTime(0)
   so_luong_khach Int?
   ma_nguoi_dat   Int?
-  Phong          Phong?     @relation(fields: [ma_phong], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "DatPhong_ibfk_1")
-  NguoiDung      NguoiDung? @relation(fields: [ma_nguoi_dat], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "DatPhong_ibfk_2")
+  Phong          Phong?     @relation(fields: [ma_phong], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "DatPhong_ibfk_1")
+  NguoiDung      NguoiDung? @relation(fields: [ma_nguoi_dat], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "DatPhong_ibfk_2")
 
   @@index([ma_nguoi_dat], map: "ma_nguoi_dat")
   @@index([ma_phong], map: "ma_phong")
@@ -48,7 +48,7 @@ model HinhPhong {
   id         Int     @id @default(autoincrement())
   phong_id   Int?
   image_path String? @db.VarChar(255)
-  Phong      Phong?  @relation(fields: [phong_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "HinhPhong_ibfk_1")
+  Phong      Phong?  @relation(fields: [phong_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "HinhPhong_ibfk_1")
 
   @@index([phong_id], map: "phong_id")
 }
@@ -57,7 +57,7 @@ model HinhViTri {
   id         Int     @id @default(autoincrement())
   vi_tri_id  Int?
   image_path String? @db.VarChar(255)
-  ViTri      ViTri?  @relation(fields: [vi_tri_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "HinhViTri_ibfk_1")
+  ViTri      ViTri?  @relation(fields: [vi_tri_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "HinhViTri_ibfk_1")
 
   @@index([vi_tri_id], map: "vi_tri_id")
 }

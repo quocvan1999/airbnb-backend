@@ -16,8 +16,8 @@ CREATE TABLE DatPhong (
     ngay_di DATETIME,
     so_luong_khach INT,
     ma_nguoi_dat INT,
-    FOREIGN KEY (ma_phong) REFERENCES Phong(id),
-    FOREIGN KEY (ma_nguoi_dat) REFERENCES NguoiDung(id)
+    FOREIGN KEY (ma_phong) REFERENCES Phong(id) ON DELETE CASCADE,
+    FOREIGN KEY (ma_nguoi_dat) REFERENCES NguoiDung(id) ON DELETE CASCADE
 );
 
 CREATE TABLE Phong (
@@ -54,29 +54,29 @@ CREATE TABLE BinhLuan (
     ngay_binh_luan DATETIME,
     noi_dung TEXT,
     sao_binh_luan INT,
-    FOREIGN KEY (ma_phong) REFERENCES Phong(id),
-    FOREIGN KEY (ma_nguoi_binh_luan) REFERENCES NguoiDung(id)
+    FOREIGN KEY (ma_phong) REFERENCES Phong(id) ON DELETE CASCADE,
+    FOREIGN KEY (ma_nguoi_binh_luan) REFERENCES NguoiDung(id) ON DELETE CASCADE
 );
 
 CREATE TABLE Avatar (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
     avatar_path VARCHAR(255),
-    FOREIGN KEY (user_id) REFERENCES NguoiDung(id)
+    FOREIGN KEY (user_id) REFERENCES NguoiDung(id) ON DELETE CASCADE
 );
 
 CREATE TABLE HinhPhong (
     id INT AUTO_INCREMENT PRIMARY KEY,
     phong_id INT,
     image_path VARCHAR(255),
-    FOREIGN KEY (phong_id) REFERENCES Phong(id)
+    FOREIGN KEY (phong_id) REFERENCES Phong(id) ON DELETE CASCADE
 );
 
 CREATE TABLE HinhViTri (
     id INT AUTO_INCREMENT PRIMARY KEY,
     vi_tri_id INT,
     image_path VARCHAR(255),
-    FOREIGN KEY (vi_tri_id) REFERENCES ViTri(id)
+    FOREIGN KEY (vi_tri_id) REFERENCES ViTri(id) ON DELETE CASCADE
 );
 
 -- Thêm dữ liệu mẫu vào NguoiDung
