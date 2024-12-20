@@ -77,7 +77,6 @@ export class AuthService {
       }
 
       const newPassword = bcrypt.hashSync(pass_word, 10);
-      const formattedDate = parse(birth_day, 'dd/MM/yyyy', new Date());
 
       const register = await this.prisma.nguoiDung.create({
         data: {
@@ -85,7 +84,7 @@ export class AuthService {
           email,
           pass_word: newPassword,
           phone,
-          birth_day: formattedDate,
+          birth_day,
           gender,
           role: 'User',
         },

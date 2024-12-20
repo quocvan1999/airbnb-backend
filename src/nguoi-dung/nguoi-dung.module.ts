@@ -16,6 +16,9 @@ export class NguoiDungModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
-      .forRoutes({ path: '/nguoi-dung', method: RequestMethod.GET });
+      .forRoutes(
+        { path: '/nguoi-dung', method: RequestMethod.GET },
+        { path: '/nguoi-dung', method: RequestMethod.POST },
+      );
   }
 }

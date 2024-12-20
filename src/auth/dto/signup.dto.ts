@@ -27,7 +27,7 @@ export class SignUpDto {
 
   @IsNotEmpty({ message: 'Ngày sinh không được để trống' })
   @ApiProperty()
-  birth_day: string;
+  birth_day: Date;
 
   @ApiProperty({
     enum: Gender,
