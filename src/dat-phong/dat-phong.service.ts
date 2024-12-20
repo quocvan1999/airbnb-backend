@@ -151,4 +151,44 @@ export class DatPhongService {
       throw new Error(error.message);
     }
   }
+
+  async deleteBooking(id: number, req: Request): Promise<string> {
+    try {
+      const checkBooking = await this.prisma.datPhong.findUnique({
+        where: { id },
+      });
+
+      if (!checkBooking) {
+        return 'BOOKING_NOT_FOUND';
+      }
+
+      const { id: userId } = req['user'].data;
+
+      if (!userId) {
+        return 'ID_NOT_FOUND';
+      }
+
+      const checkUser = await this.prisma.nguoiDung.findUnique({
+        where: {
+          id: Number(userId),
+        },
+      });
+
+      if (!checkUser) {
+        return 'USER_NOT_FOUND';
+      }
+
+      const deleteBooking = await this.prisma.datPhong.delete({
+        where: { id },
+      });
+
+      if (!deleteBooking) {
+        return 'INTERNAL_SERVER_ERROR';
+      }
+
+      return 'DELETED';
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 }

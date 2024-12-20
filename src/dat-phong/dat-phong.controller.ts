@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Param,
@@ -245,6 +246,74 @@ export class DatPhongController {
             statusCode: HttpStatus.OK,
             content: {
               message: 'Cập nhật đặt phòng thành công',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        default:
+          break;
+      }
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        content: { message: 'Internal Server Error' },
+        error: error?.message || 'Internal Server Error',
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
+
+  @Delete(':id')
+  @ApiParam({ name: 'id', type: Number })
+  @ApiHeader({ name: 'token', required: true })
+  async deleteBooking(
+    @Param('id') id: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<Response> {
+    try {
+      const deleted: string = await this.datPhongService.deleteBooking(
+        Number(id),
+        req,
+      );
+
+      switch (deleted) {
+        case 'BOOKING_NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Đặt phòng không tồn tại',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'ID_NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Không lấy được id người dùng',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'USER_NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Người dùng không tồn tại',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'INTERNAL_SERVER_ERROR':
+          return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            content: {
+              message: 'Xóa đặt phòng không thành công',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'DELETED':
+          return res.status(HttpStatus.OK).json({
+            statusCode: HttpStatus.OK,
+            content: {
+              message: 'Xóa đặt phòng thành công',
             },
             timestamp: new Date().toISOString(),
           });
