@@ -191,4 +191,58 @@ export class DatPhongService {
       throw new Error(error.message);
     }
   }
+
+  async getBookingByUserId(
+    page: number,
+    limit: number,
+    MaNguoiDung: number,
+    req: Request,
+  ): Promise<{ data: DatPhongDto[]; total: number } | string> {
+    try {
+      const { id } = req['user'].data;
+
+      if (!id) {
+        return 'ID_NOT_FOUND';
+      }
+
+      if (MaNguoiDung !== id){
+        return 'PERMISSION_DENIED';
+      }
+
+      const checkUser = await this.prisma.nguoiDung.findUnique({
+        where: {
+          id: Number(id),
+        },
+      });
+
+      if (!checkUser) {
+        return 'USER_NOT_FOUND';
+      }
+
+      const bookings: DatPhongDto[] = await this.prisma.datPhong.findMany({
+        where: {
+          ma_nguoi_dat: Number(id),
+        },
+        skip: (page - 1) * limit,
+        take: limit,
+      });
+
+      if (!bookings) {
+        return 'NOT_FOUND';
+      }
+
+      const totalComment: number = await this.prisma.datPhong.count({
+        where: {
+          ma_nguoi_dat: Number(id),
+        },
+      });
+
+      return {
+        data: bookings,
+        total: totalComment,
+      };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 }

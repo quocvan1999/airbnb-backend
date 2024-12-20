@@ -18,6 +18,10 @@ export class DatPhongModule implements NestModule {
         { path: '/dat-phong/:id', method: RequestMethod.GET },
         { path: '/dat-phong/:id', method: RequestMethod.PUT },
         { path: '/dat-phong/:id', method: RequestMethod.DELETE },
+        {
+          path: '/dat-phong/lay-theo-nguoi-dung/:MaNguoiDung',
+          method: RequestMethod.GET,
+        },
       );
   }
 }
