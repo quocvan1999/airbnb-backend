@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
   Query,
   Req,
   Res,
@@ -14,6 +15,7 @@ import { ApiHeader, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { Response } from 'express';
 import { DatPhongDto } from './dto/dat-phong.dto';
 import { CreateDatPhongDto } from './dto/create-dat-phong.dto';
+import { UpdateDatPhongDto } from './dto/update-dat-phong.dto';
 
 @Controller('dat-phong')
 export class DatPhongController {
@@ -170,6 +172,84 @@ export class DatPhongController {
           },
           timestamp: new Date().toISOString(),
         });
+      }
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        content: { message: 'Internal Server Error' },
+        error: error?.message || 'Internal Server Error',
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
+
+  @Put(':id')
+  @ApiParam({ name: 'id', type: Number })
+  @ApiHeader({ name: 'token', required: true })
+  async updateBooking(
+    @Body() body: UpdateDatPhongDto,
+    @Param('id') id: string,
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<Response> {
+    try {
+      const update: string = await this.datPhongService.updateBooking(
+        body,
+        Number(id),
+        req,
+      );
+
+      switch (update) {
+        case 'BOOKING_NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Đặt phòng không tồn tại',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'ROOM_NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Phòng không tồn tại',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'ID_NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Không lấy được id người dùng',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'USER_NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Người dùng không tồn tại',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'INTERNAL_SERVER_ERROR':
+          return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            content: {
+              message: 'Cập nhật đặt phòng không thành công',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'UPDATED':
+          return res.status(HttpStatus.OK).json({
+            statusCode: HttpStatus.OK,
+            content: {
+              message: 'Cập nhật đặt phòng thành công',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        default:
+          break;
       }
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({

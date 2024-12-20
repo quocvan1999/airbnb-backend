@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DatPhongDto } from './dto/dat-phong.dto';
 import { PrismaClient } from '@prisma/client';
 import { CreateDatPhongDto } from './dto/create-dat-phong.dto';
+import { UpdateDatPhongDto } from './dto/update-dat-phong.dto';
 
 @Injectable()
 export class DatPhongService {
@@ -89,6 +90,63 @@ export class DatPhongService {
       }
 
       return booking;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async updateBooking(
+    body: UpdateDatPhongDto,
+    id: number,
+    req: Request,
+  ): Promise<string> {
+    try {
+      const checkBooking = await this.prisma.datPhong.findUnique({
+        where: { id },
+      });
+
+      if (!checkBooking) {
+        return 'BOOKING_NOT_FOUND';
+      }
+
+      const checkRoom = await this.prisma.phong.findUnique({
+        where: { id: Number(checkBooking.ma_phong) },
+      });
+
+      if (!checkRoom) {
+        return 'ROOM_NOT_FOUND';
+      }
+
+      const { id: userId } = req['user'].data;
+
+      if (!userId) {
+        return 'ID_NOT_FOUND';
+      }
+
+      const checkUser = await this.prisma.nguoiDung.findUnique({
+        where: {
+          id: Number(userId),
+        },
+      });
+
+      if (!checkUser) {
+        return 'USER_NOT_FOUND';
+      }
+
+      const update = await this.prisma.datPhong.update({
+        where: { id },
+        data: {
+          ngay_den: body.ngay_den,
+          ngay_di: body.ngay_di,
+          so_luong_khach: Number(body.so_luong_khach),
+        },
+      });
+
+      if (!update) {
+        return 'INTERNAL_SERVER_ERROR';
+      }
+
+      return 'UPDATED';
     } catch (error) {
       throw new Error(error.message);
     }
