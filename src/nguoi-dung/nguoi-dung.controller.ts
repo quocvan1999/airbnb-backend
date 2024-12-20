@@ -21,10 +21,12 @@ export class NguoiDungController {
   @Get()
   @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'keyword', required: false, type: String })
   @ApiHeader({ name: 'token', required: true })
   async getNguoiDung(
     @Query('limit') limit: number,
     @Query('page') page: number,
+    @Query('keyword') keyword: string,
     @Res() res: Response,
   ): Promise<Response> {
     try {
@@ -32,7 +34,7 @@ export class NguoiDungController {
       const formatSize = limit ? Number(limit) : 10;
 
       const users: { data: NguoiDungDto[]; total: number } | string =
-        await this.nguoiDungService.getNguoiDung(formatPage, formatSize);
+        await this.nguoiDungService.getNguoiDung(formatPage, formatSize, keyword);
 
       if (typeof users === 'string') {
         switch (users) {
@@ -78,7 +80,10 @@ export class NguoiDungController {
     @Res() res: Response,
   ): Promise<Response> {
     try {
-      const register: string = await this.nguoiDungService.createUser(body, req);
+      const register: string = await this.nguoiDungService.createUser(
+        body,
+        req,
+      );
 
       switch (register) {
         case 'ID_NOT_FOUND':

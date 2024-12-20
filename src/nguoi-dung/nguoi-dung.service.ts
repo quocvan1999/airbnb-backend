@@ -11,11 +11,17 @@ export class NguoiDungService {
   async getNguoiDung(
     page: number,
     limit: number,
+    keyword: string,
   ): Promise<{ data: NguoiDungDto[]; total: number } | string> {
     try {
       const users: NguoiDungDto[] = await this.prisma.nguoiDung.findMany({
         take: limit,
         skip: (page - 1) * limit,
+        where: {
+          name: {
+            contains: keyword,
+          },
+        },
       });
 
       if (!users) {
