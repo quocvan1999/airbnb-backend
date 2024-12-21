@@ -1,8 +1,18 @@
-import { Controller, Get, HttpStatus, Query, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  Query,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { ViTriService } from './vi-tri.service';
-import { ApiQuery } from '@nestjs/swagger';
+import { ApiHeader, ApiQuery } from '@nestjs/swagger';
 import { ViTriDto } from './dto/vi-tri.dto';
 import { Response } from 'express';
+import { CreateViTriDto } from './dto/create-vi-tri.dto';
 
 @Controller('vi-tri')
 export class ViTriController {
@@ -50,6 +60,64 @@ export class ViTriController {
           },
           timestamp: new Date().toISOString(),
         });
+      }
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        content: { message: 'Internal Server Error' },
+        error: error?.message || 'Internal Server Error',
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
+
+  @Post()
+  @ApiHeader({ name: 'token', required: true })
+  async createLocation(
+    @Body() body: CreateViTriDto,
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<Response> {
+    try {
+      const location: string = await this.viTriService.createUser(body, req);
+
+      switch (location) {
+        case 'ID_NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Không lấy được id người dùng',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'USER_NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Người dùng không tồn tại',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'FORBIDDEN':
+          return res.status(HttpStatus.FORBIDDEN).json({
+            statusCode: HttpStatus.FORBIDDEN,
+            content: { message: 'Chỉ có Admin mới được thêm vị trí' },
+            timestamp: new Date().toISOString(),
+          });
+        case 'INTERNAL_SERVER_ERROR':
+          return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            content: { message: 'Thêm mới vị trí không thành công' },
+            timestamp: new Date().toISOString(),
+          });
+        case 'CREATED':
+          return res.status(HttpStatus.CREATED).json({
+            statusCode: HttpStatus.CREATED,
+            content: { message: 'Thêm mới vị trí thành công' },
+            timestamp: new Date().toISOString(),
+          });
+        default:
+          break;
       }
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
