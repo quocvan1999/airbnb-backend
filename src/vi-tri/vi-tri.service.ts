@@ -133,4 +133,42 @@ export class ViTriService {
       throw new Error(error.message);
     }
   }
+
+  async deleteLocation(id: number, req: Request): Promise<string> {
+    try {
+      const { id: userId } = req['user'].data;
+
+      if (!userId) {
+        return 'ID_NOT_FOUND';
+      }
+
+      const checkUser = await this.prisma.nguoiDung.findUnique({
+        where: {
+          id: Number(userId),
+        },
+      });
+
+      if (!checkUser) {
+        return 'USER_NOT_FOUND';
+      }
+
+      if (checkUser.role !== 'Admin') {
+        return 'FORBIDDEN';
+      }
+
+      const deleteLocation = await this.prisma.viTri.delete({
+        where: {
+          id,
+        },
+      });
+
+      if (!deleteLocation) {
+        return 'INTERNAL_SERVER_ERROR';
+      }
+
+      return 'DELETED';
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 }

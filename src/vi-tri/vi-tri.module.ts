@@ -19,6 +19,7 @@ export class ViTriModule implements NestModule {
       .forRoutes(
         { path: '/vi-tri', method: RequestMethod.POST },
         { path: '/vi-tri/:id', method: RequestMethod.PUT },
+        { path: '/vi-tri/:id', method: RequestMethod.DELETE },
       );
   }
 }
