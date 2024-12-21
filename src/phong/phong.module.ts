@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { PhongService } from './phong.service';
 import { PhongController } from './phong.controller';
 import { AuthMiddleware } from 'src/middlewares/auth.middleware';
@@ -11,8 +16,6 @@ export class PhongModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
-      .forRoutes
-      // { path: '/nguoi-dung/:id', method: RequestMethod.GET },
-      ();
+      .forRoutes({ path: '/phong', method: RequestMethod.POST });
   }
 }
