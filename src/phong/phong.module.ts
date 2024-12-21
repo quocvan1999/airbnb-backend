@@ -19,6 +19,7 @@ export class PhongModule implements NestModule {
       .forRoutes(
         { path: '/phong', method: RequestMethod.POST },
         { path: '/phong/:id', method: RequestMethod.PUT },
+        { path: '/phong/:id', method: RequestMethod.DELETE },
       );
   }
 }

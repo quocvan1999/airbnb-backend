@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Post,
@@ -203,7 +204,9 @@ export class PhongController {
     @Res() res: Response,
   ): Promise<Response> {
     try {
-      const room: PhongDto | string = await this.phongService.getRoomById(Number(id));
+      const room: PhongDto | string = await this.phongService.getRoomById(
+        Number(id),
+      );
 
       if (typeof room === 'string') {
         switch (room) {
@@ -247,7 +250,11 @@ export class PhongController {
     @Res() res: Response,
   ): Promise<Response> {
     try {
-      const update: string = await this.phongService.updateRoom(Number(id), body, req);
+      const update: string = await this.phongService.updateRoom(
+        Number(id),
+        body,
+        req,
+      );
 
       switch (update) {
         case 'ID_NOT_FOUND':
@@ -282,6 +289,69 @@ export class PhongController {
           return res.status(HttpStatus.OK).json({
             statusCode: HttpStatus.OK,
             content: { message: 'Cập nhật phòng thành công' },
+            timestamp: new Date().toISOString(),
+          });
+        default:
+          break;
+      }
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        content: { message: 'Internal Server Error' },
+        error: error?.message || 'Internal Server Error',
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
+
+  @Delete('/:id')
+  @ApiHeader({ name: 'token', required: true })
+  async deleteRoom(
+    @Query('id') id: number,
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<Response> {
+    try {
+      const deleted: string = await this.phongService.deleteRoom(
+        Number(id),
+        req,
+      );
+
+      switch (deleted) {
+        case 'ID_NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Không lấy được id người dùng',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'USER_NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Người dùng không tồn tại',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'FORBIDDEN':
+          return res.status(HttpStatus.FORBIDDEN).json({
+            statusCode: HttpStatus.FORBIDDEN,
+            content: { message: 'Chỉ có Admin mới được xóa phòng' },
+            timestamp: new Date().toISOString(),
+          });
+        case 'NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Phòng không tồn tại',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'DELETED':
+          return res.status(HttpStatus.OK).json({
+            statusCode: HttpStatus.OK,
+            content: { message: 'Xóa phòng thành công' },
             timestamp: new Date().toISOString(),
           });
         default:

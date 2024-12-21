@@ -251,4 +251,42 @@ export class PhongService {
       throw new Error(error.message);
     }
   }
+
+  async deleteRoom(id: number, req: Request): Promise<string> {
+    try {
+      const { id: userId } = req['user'].data;
+
+      if (!userId) {
+        return 'ID_NOT_FOUND';
+      }
+
+      const checkUser = await this.prisma.nguoiDung.findUnique({
+        where: {
+          id: Number(userId),
+        },
+      });
+
+      if (!checkUser) {
+        return 'USER_NOT_FOUND';
+      }
+
+      if (checkUser.role !== 'Admin') {
+        return 'FORBIDDEN';
+      }
+
+      const deleteRoom = await this.prisma.phong.delete({
+        where: {
+          id,
+        },
+      });
+
+      if (!deleteRoom) {
+        return 'NOT_FOUND';
+      }
+
+      return 'DELETED';
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 }
