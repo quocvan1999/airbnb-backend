@@ -5,4 +5,5 @@ export class NguoiDungDto {
   birth_day: Date;
   gender: string;
   role: string;
+  avatar: string;
 }

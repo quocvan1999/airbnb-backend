@@ -87,6 +87,7 @@ export class AuthService {
           birth_day,
           gender,
           role: 'User',
+          avatar: '',
         },
       });
 

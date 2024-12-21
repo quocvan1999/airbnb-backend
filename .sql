@@ -6,7 +6,8 @@ CREATE TABLE NguoiDung (
     phone VARCHAR(255),
     birth_day DATE,
     gender VARCHAR(255),
-    role VARCHAR(255)
+    role VARCHAR(255),
+    avatar VARCHAR(255)
 );
 
 CREATE TABLE DatPhong (
@@ -37,14 +38,16 @@ CREATE TABLE Phong (
     bep BOOLEAN,
     do_xe BOOLEAN,
     ho_boi BOOLEAN,
-    ban_ui BOOLEAN
+    ban_ui BOOLEAN,
+    hinh_anh VARCHAR(255)
 );
 
 CREATE TABLE ViTri (
     id INT AUTO_INCREMENT PRIMARY KEY,
     ten_vi_tri VARCHAR(255),
     tinh_thanh VARCHAR(255),
-    quoc_gia INT
+    quoc_gia INT,
+    hinh_anh VARCHAR(255)
 );
 
 CREATE TABLE BinhLuan (
@@ -58,39 +61,19 @@ CREATE TABLE BinhLuan (
     FOREIGN KEY (ma_nguoi_binh_luan) REFERENCES NguoiDung(id) ON DELETE CASCADE
 );
 
-CREATE TABLE Avatar (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
-    avatar_path VARCHAR(255),
-    FOREIGN KEY (user_id) REFERENCES NguoiDung(id) ON DELETE CASCADE
-);
-
-CREATE TABLE HinhPhong (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    phong_id INT,
-    image_path VARCHAR(255),
-    FOREIGN KEY (phong_id) REFERENCES Phong(id) ON DELETE CASCADE
-);
-
-CREATE TABLE HinhViTri (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    vi_tri_id INT,
-    image_path VARCHAR(255),
-    FOREIGN KEY (vi_tri_id) REFERENCES ViTri(id) ON DELETE CASCADE
-);
 
 -- Thêm dữ liệu mẫu vào NguoiDung
-INSERT INTO NguoiDung (id, name, email, pass_word, phone, birth_day, gender, role) VALUES 
-(1, 'User1', 'user1@example.com', 'password1', '123456789', '1990-01-01', 'Male', 'User'),
-(2, 'User2', 'user2@example.com', 'password2', '123456789', '1990-01-01', 'Female', 'User'),
-(3, 'User3', 'user3@example.com', 'password3', '123456789', '1990-01-01', 'Male', 'User'),
-(4, 'User4', 'user4@example.com', 'password4', '123456789', '1990-01-01', 'Female', 'User'),
-(5, 'User5', 'user5@example.com', 'password5', '123456789', '1990-01-01', 'Male', 'User'),
-(6, 'User6', 'user6@example.com', 'password6', '123456789', '1990-01-01', 'Female', 'User'),
-(7, 'User7', 'user7@example.com', 'password7', '123456789', '1990-01-01', 'Male', 'User'),
-(8, 'User8', 'user8@example.com', 'password8', '123456789', '1990-01-01', 'Female', 'User'),
-(9, 'User9', 'user9@example.com', 'password9', '123456789', '1990-01-01', 'Male', 'User'),
-(10, 'User10', 'user10@example.com', 'password10', '123456789', '1990-01-01', 'Female', 'User');
+INSERT INTO NguoiDung (id, name, email, pass_word, phone, birth_day, gender, role, avatar) VALUES 
+(1, 'User1', 'user1@example.com', '$2b$10$c.sIN0we89Ar1R2OfEVsHODUXBQfsDxR2tO7fZdewU.XlGAup97aO', '123456789', '1990-01-01', 'Male', 'User', '/public/imgs/avatars/avatar1.jpg'),
+(2, 'User2', 'user2@example.com', '$2b$10$c.sIN0we89Ar1R2OfEVsHODUXBQfsDxR2tO7fZdewU.XlGAup97aO', '123456789', '1990-01-01', 'Female', 'User', '/public/imgs/avatars/avatar2.jpg'),
+(3, 'User3', 'user3@example.com', '$2b$10$c.sIN0we89Ar1R2OfEVsHODUXBQfsDxR2tO7fZdewU.XlGAup97aO', '123456789', '1990-01-01', 'Male', 'User', '/public/imgs/avatars/avatar3.jpg'),
+(4, 'User4', 'user4@example.com', '$2b$10$c.sIN0we89Ar1R2OfEVsHODUXBQfsDxR2tO7fZdewU.XlGAup97aO', '123456789', '1990-01-01', 'Female', 'User', '/public/imgs/avatars/avatar4.jpg'),
+(5, 'User5', 'user5@example.com', '$2b$10$c.sIN0we89Ar1R2OfEVsHODUXBQfsDxR2tO7fZdewU.XlGAup97aO', '123456789', '1990-01-01', 'Male', 'User', '/public/imgs/avatars/avatar5.jpg'),
+(6, 'User6', 'user6@example.com', '$2b$10$c.sIN0we89Ar1R2OfEVsHODUXBQfsDxR2tO7fZdewU.XlGAup97aO', '123456789', '1990-01-01', 'Female', 'User', '/public/imgs/avatars/avatar6.jpg'),
+(7, 'User7', 'user7@example.com', '$2b$10$c.sIN0we89Ar1R2OfEVsHODUXBQfsDxR2tO7fZdewU.XlGAup97aO', '123456789', '1990-01-01', 'Male', 'User', '/public/imgs/avatars/avatar7.jpg'),
+(8, 'User8', 'user8@example.com', '$2b$10$c.sIN0we89Ar1R2OfEVsHODUXBQfsDxR2tO7fZdewU.XlGAup97aO', '123456789', '1990-01-01', 'Female', 'User', '/public/imgs/avatars/avatar8.jpg'),
+(9, 'User9', 'user9@example.com', '$2b$10$c.sIN0we89Ar1R2OfEVsHODUXBQfsDxR2tO7fZdewU.XlGAup97aO', '123456789', '1990-01-01', 'Male', 'User', '/public/imgs/avatars/avatar9.jpg'),
+(10, 'User10', 'user10@example.com', '$2b$10$c.sIN0we89Ar1R2OfEVsHODUXBQfsDxR2tO7fZdewU.XlGAup97aO', '123456789', '1990-01-01', 'Female', 'User', '/public/imgs/avatars/avatar10.jpg');
 
 -- Thêm dữ liệu mẫu vào DatPhong
 INSERT INTO DatPhong (id, ma_phong, ngay_den, ngay_di, so_luong_khach, ma_nguoi_dat) VALUES 
@@ -106,30 +89,30 @@ INSERT INTO DatPhong (id, ma_phong, ngay_den, ngay_di, so_luong_khach, ma_nguoi_
 (10, 10, '2024-12-10 14:00:00', '2024-12-14 11:00:00', 1, 10);
 
 -- Thêm dữ liệu mẫu vào Phong
-INSERT INTO Phong (id, ten_phong, khach, phong_ngu, giuong, phong_tam, mo_ta, gia_tien, may_giat, ban_la, tivi, dieu_hoa, wifi, bep, do_xe, ho_boi, ban_ui) VALUES 
-(1, 'Phong1', 2, 1, 1, 1, 'Mo ta phong 1', 1000000, true, true, true, true, true, true, true, true, true),
-(2, 'Phong2', 3, 2, 2, 2, 'Mo ta phong 2', 2000000, true, true, true, true, true, true, true, true, true),
-(3, 'Phong3', 4, 3, 3, 3, 'Mo ta phong 3', 3000000, true, true, true, true, true, true, true, true, true),
-(4, 'Phong4', 2, 1, 1, 1, 'Mo ta phong 4', 1500000, true, true, true, true, true, true, true, true, true),
-(5, 'Phong5', 2, 1, 1, 1, 'Mo ta phong 5', 1000000, true, true, true, true, true, true, true, true, true),
-(6, 'Phong6', 3, 2, 2, 2, 'Mo ta phong 6', 2000000, true, true, true, true, true, true, true, true, true),
-(7, 'Phong7', 4, 3, 3, 3, 'Mo ta phong 7', 3000000, true, true, true, true, true, true, true, true, true),
-(8, 'Phong8', 2, 1, 1, 1, 'Mo ta phong 8', 1500000, true, true, true, true, true, true, true, true, true),
-(9, 'Phong9', 2, 1, 1, 1, 'Mo ta phong 9', 1000000, true, true, true, true, true, true, true, true, true),
-(10, 'Phong10', 3, 2, 2, 2, 'Mo ta phong 10', 2000000, true, true, true, true, true, true, true, true, true);
+INSERT INTO Phong (id, ten_phong, khach, phong_ngu, giuong, phong_tam, mo_ta, gia_tien, may_giat, ban_la, tivi, dieu_hoa, wifi, bep, do_xe, ho_boi, ban_ui, hinh_anh) VALUES 
+(1, 'Phong1', 2, 1, 1, 1, 'Mo ta phong 1', 1000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room1.jpg'),
+(2, 'Phong2', 3, 2, 2, 2, 'Mo ta phong 2', 2000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room2.jpg'),
+(3, 'Phong3', 4, 3, 3, 3, 'Mo ta phong 3', 3000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room3.jpg'),
+(4, 'Phong4', 2, 1, 1, 1, 'Mo ta phong 4', 1500000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room4.jpg'),
+(5, 'Phong5', 2, 1, 1, 1, 'Mo ta phong 5', 1000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room5.jpg'),
+(6, 'Phong6', 3, 2, 2, 2, 'Mo ta phong 6', 2000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room6.jpg'),
+(7, 'Phong7', 4, 3, 3, 3, 'Mo ta phong 7', 3000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room7.jpg'),
+(8, 'Phong8', 2, 1, 1, 1, 'Mo ta phong 8', 1500000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room8.jpg'),
+(9, 'Phong9', 2, 1, 1, 1, 'Mo ta phong 9', 1000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room9.jpg'),
+(10, 'Phong10', 3, 2, 2, 2, 'Mo ta phong 10', 2000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room10.jpg');
 
 -- Thêm dữ liệu mẫu vào ViTri (tiếp tục)
-INSERT INTO ViTri (id, ten_vi_tri, tinh_thanh, quoc_gia) VALUES 
-(1, 'ViTri1', 'TinhThanh1', 1),
-(2, 'ViTri2', 'TinhThanh2', 2),
-(3, 'ViTri3', 'TinhThanh3', 3),
-(4, 'ViTri4', 'TinhThanh4', 4),
-(5, 'ViTri5', 'TinhThanh5', 5),
-(6, 'ViTri6', 'TinhThanh6', 6),
-(7, 'ViTri7', 'TinhThanh7', 7),
-(8, 'ViTri8', 'TinhThanh8', 8),
-(9, 'ViTri9', 'TinhThanh9', 9),
-(10, 'ViTri10', 'TinhThanh10', 10);
+INSERT INTO ViTri (id, ten_vi_tri, tinh_thanh, quoc_gia, hinh_anh) VALUES 
+(1, 'ViTri1', 'TinhThanh1', 1, '/public/imgs/locations/location1.jpg'),
+(2, 'ViTri2', 'TinhThanh2', 2, '/public/imgs/locations/location2.jpg'),
+(3, 'ViTri3', 'TinhThanh3', 3, '/public/imgs/locations/location3.jpg'),
+(4, 'ViTri4', 'TinhThanh4', 4, '/public/imgs/locations/location4.jpg'),
+(5, 'ViTri5', 'TinhThanh5', 5, '/public/imgs/locations/location5.jpg'),
+(6, 'ViTri6', 'TinhThanh6', 6, '/public/imgs/locations/location6.jpg'),
+(7, 'ViTri7', 'TinhThanh7', 7, '/public/imgs/locations/location7.jpg'),
+(8, 'ViTri8', 'TinhThanh8', 8, '/public/imgs/locations/location8.jpg'),
+(9, 'ViTri9', 'TinhThanh9', 9, '/public/imgs/locations/location9.jpg'),
+(10, 'ViTri10', 'TinhThanh10', 10, '/public/imgs/locations/location10.jpg');
 
 -- Thêm dữ liệu mẫu vào BinhLuan
 INSERT INTO BinhLuan (id, ma_phong, ma_nguoi_binh_luan, ngay_binh_luan, noi_dung, sao_binh_luan) VALUES 
@@ -143,63 +126,4 @@ INSERT INTO BinhLuan (id, ma_phong, ma_nguoi_binh_luan, ngay_binh_luan, noi_dung
 (8, 8, 8, '2024-12-08 12:00:00', 'Binh luan 8', 4),
 (9, 9, 9, '2024-12-09 12:00:00', 'Binh luan 9', 3),
 (10, 10, 10, '2024-12-10 12:00:00', 'Binh luan 10', 5);
-
--- Thêm dữ liệu mẫu vào Avatar
-INSERT INTO Avatar (id, user_id, avatar_path) VALUES 
-(1, 1, '/imgs/avatars/avatar1.jpg'),
-(2, 2, '/imgs/avatars/avatar2.jpg'),
-(3, 3, '/imgs/avatars/avatar3.jpg'),
-(4, 4, '/imgs/avatars/avatar4.jpg'),
-(5, 5, '/imgs/avatars/avatar5.jpg'),
-(6, 6, '/imgs/avatars/avatar6.jpg'),
-(7, 7, '/imgs/avatars/avatar7.jpg'),
-(8, 8, '/imgs/avatars/avatar8.jpg'),
-(9, 9, '/imgs/avatars/avatar9.jpg'),
-(10, 10, '/imgs/avatars/avatar10.jpg');
-
--- Thêm dữ liệu mẫu vào HinhPhong
-INSERT INTO HinhPhong (id, phong_id, image_path) VALUES 
-(1, 1, '/imgs/rooms/room1_1.jpg'),
-(2, 1, '/imgs/rooms/room1_2.jpg'),
-(3, 1, '/imgs/rooms/room1_3.jpg'),
-(4, 2, '/imgs/rooms/room2_1.jpg'),
-(5, 2, '/imgs/rooms/room2_2.jpg'),
-(6, 2, '/imgs/rooms/room2_3.jpg'),
-(7, 3, '/imgs/rooms/room3_1.jpg'),
-(8, 3, '/imgs/rooms/room3_2.jpg'),
-(9, 3, '/imgs/rooms/room3_3.jpg'),
-(10, 4, '/imgs/rooms/room4_1.jpg'),
-(11, 4, '/imgs/rooms/room4_2.jpg'),
-(12, 4, '/imgs/rooms/room4_3.jpg'),
-(13, 5, '/imgs/rooms/room5_1.jpg'),
-(14, 5, '/imgs/rooms/room5_2.jpg'),
-(15, 5, '/imgs/rooms/room5_3.jpg'),
-(16, 6, '/imgs/rooms/room6_1.jpg'),
-(17, 6, '/imgs/rooms/room6_2.jpg'),
-(18, 6, '/imgs/rooms/room6_3.jpg'),
-(19, 7, '/imgs/rooms/room7_1.jpg'),
-(20, 7, '/imgs/rooms/room7_2.jpg'),
-(21, 7, '/imgs/rooms/room7_3.jpg'),
-(22, 8, '/imgs/rooms/room8_1.jpg'),
-(23, 8, '/imgs/rooms/room8_2.jpg'),
-(24, 8, '/imgs/rooms/room8_3.jpg'),
-(25, 9, '/imgs/rooms/room9_1.jpg'),
-(26, 9, '/imgs/rooms/room9_2.jpg'),
-(27, 9, '/imgs/rooms/room9_3.jpg'),
-(28, 10, '/imgs/rooms/room10_1.jpg'),
-(29, 10, '/imgs/rooms/room10_2.jpg'),
-(30, 10, '/imgs/rooms/room10_3.jpg');
-
--- Thêm dữ liệu mẫu vào HinhViTri
-INSERT INTO HinhViTri (id, vi_tri_id, image_path) VALUES 
-(1, 1, '/imgs/locations/location1.jpg'),
-(2, 2, '/imgs/locations/location2.jpg'),
-(3, 3, '/imgs/locations/location3.jpg'),
-(4, 4, '/imgs/locations/location4.jpg'),
-(5, 5, '/imgs/locations/location5.jpg'),
-(6, 6, '/imgs/locations/location6.jpg'),
-(7, 7, '/imgs/locations/location7.jpg'),
-(8, 8, '/imgs/locations/location8.jpg'),
-(9, 9, '/imgs/locations/location9.jpg'),
-(10, 10, '/imgs/locations/location10.jpg');
 

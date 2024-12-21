@@ -30,6 +30,7 @@ export class NguoiDungService {
           birth_day: true,
           gender: true,
           role: true,
+          avatar: true,
         },
       });
 
@@ -152,6 +153,7 @@ export class NguoiDungService {
           birth_day: true,
           gender: true,
           role: true,
+          avatar: true,
         },
       });
 
