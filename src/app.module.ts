@@ -5,6 +5,7 @@ import { BinhLuanModule } from './binh-luan/binh-luan.module';
 import { DatPhongModule } from './dat-phong/dat-phong.module';
 import { NguoiDungModule } from './nguoi-dung/nguoi-dung.module';
 import { PhongModule } from './phong/phong.module';
+import { ViTriModule } from './vi-tri/vi-tri.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { PhongModule } from './phong/phong.module';
     DatPhongModule,
     NguoiDungModule,
     PhongModule,
+    ViTriModule,
   ],
   controllers: [],
   providers: [],
