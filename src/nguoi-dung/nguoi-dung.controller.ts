@@ -206,4 +206,48 @@ export class NguoiDungController {
       });
     }
   }
+
+  @Get(':id')
+  @ApiParam({ name: 'id', type: Number })
+  @ApiHeader({ name: 'token', required: true })
+  async getUserById(
+    @Param('id') id: string,
+    @Res() res: Response,
+  ): Promise<Response> {
+    try {
+      const user: NguoiDungDto | string =
+        await this.nguoiDungService.getUserById(Number(id));
+
+      if (typeof user === 'string') {
+        switch (user) {
+          case 'NOT_FOUND':
+            return res.status(HttpStatus.NOT_FOUND).json({
+              statusCode: HttpStatus.NOT_FOUND,
+              content: {
+                message: 'Lấy thông tin người dùng không thành công',
+              },
+              timestamp: new Date().toISOString(),
+            });
+          default:
+            break;
+        }
+      } else {
+        return res.status(HttpStatus.OK).json({
+          statusCode: HttpStatus.OK,
+          content: {
+            message: 'Lấy thông tin người dùng thành công',
+            data: user,
+          },
+          timestamp: new Date().toISOString(),
+        });
+      }
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        content: { message: 'Internal Server Error' },
+        error: error?.message || 'Internal Server Error',
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
 }

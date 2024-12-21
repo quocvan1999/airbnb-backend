@@ -22,6 +22,14 @@ export class NguoiDungService {
             contains: keyword,
           },
         },
+        select: {
+          id: true,
+          name: true,
+          phone: true,
+          birth_day: true,
+          gender: true,
+          role: true,
+        },
       });
 
       if (!users) {
@@ -127,6 +135,30 @@ export class NguoiDungService {
       }
 
       return 'DELETED';
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async getUserById(id: number): Promise<NguoiDungDto | string> {
+    try {
+      const user = await this.prisma.nguoiDung.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          name: true,
+          phone: true,
+          birth_day: true,
+          gender: true,
+          role: true,
+        },
+      });
+
+      if (!user) {
+        return 'NOT_FOUND';
+      }
+
+      return user;
     } catch (error) {
       throw new Error(error.message);
     }
