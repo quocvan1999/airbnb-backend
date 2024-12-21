@@ -4,6 +4,7 @@ import {
   Get,
   HttpStatus,
   Post,
+  Put,
   Query,
   Req,
   Res,
@@ -13,6 +14,7 @@ import { ApiHeader, ApiQuery } from '@nestjs/swagger';
 import { PhongDto } from './dto/phong.dto';
 import { Response } from 'express';
 import { CreatePhongDto } from './dto/create-phong.dto';
+import { UpdatePhongDto } from './dto/update-phong.dto';
 
 @Controller('phong')
 export class PhongController {
@@ -225,6 +227,65 @@ export class PhongController {
           },
           timestamp: new Date().toISOString(),
         });
+      }
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        content: { message: 'Internal Server Error' },
+        error: error?.message || 'Internal Server Error',
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
+
+  @Put('/:id')
+  @ApiHeader({ name: 'token', required: true })
+  async updateRoom(
+    @Query('id') id: number,
+    @Body() body: UpdatePhongDto,
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<Response> {
+    try {
+      const update: string = await this.phongService.updateRoom(Number(id), body, req);
+
+      switch (update) {
+        case 'ID_NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Không lấy được id người dùng',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'USER_NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Người dùng không tồn tại',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'FORBIDDEN':
+          return res.status(HttpStatus.FORBIDDEN).json({
+            statusCode: HttpStatus.FORBIDDEN,
+            content: { message: 'Chỉ có Admin mới được cập nhật phòng' },
+            timestamp: new Date().toISOString(),
+          });
+        case 'INTERNAL_SERVER_ERROR':
+          return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            content: { message: 'Cập nhật phòng không thành công' },
+            timestamp: new Date().toISOString(),
+          });
+        case 'UPDATED':
+          return res.status(HttpStatus.OK).json({
+            statusCode: HttpStatus.OK,
+            content: { message: 'Cập nhật phòng thành công' },
+            timestamp: new Date().toISOString(),
+          });
+        default:
+          break;
       }
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({

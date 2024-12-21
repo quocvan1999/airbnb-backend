@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Phong, PrismaClient } from '@prisma/client';
 import { PhongDto } from './dto/phong.dto';
 import { CreatePhongDto } from './dto/create-phong.dto';
+import { UpdatePhongDto } from './dto/update-phong.dto';
 
 @Injectable()
 export class PhongService {
@@ -120,12 +121,11 @@ export class PhongService {
     maViTri: number,
   ): Promise<{ data: PhongDto[]; total: number } | string> {
     try {
-
       const checkLocation = await this.prisma.viTri.findUnique({
         where: {
           id: maViTri,
         },
-      })
+      });
 
       if (!checkLocation) {
         return 'LOCATION_NOT_FOUND';
@@ -170,6 +170,85 @@ export class PhongService {
       return room;
     } catch (error) {
       return 'Internal Server Error';
+    }
+  }
+
+  async updateRoom(
+    id: number,
+    body: UpdatePhongDto,
+    req: Request,
+  ): Promise<string> {
+    try {
+      const {
+        ten_phong,
+        khach,
+        phong_ngu,
+        giuong,
+        phong_tam,
+        mo_ta,
+        gia_tien,
+        may_giat,
+        ban_la,
+        tivi,
+        dieu_hoa,
+        wifi,
+        bep,
+        do_xe,
+        ho_boi,
+        ban_ui,
+      } = body;
+
+      const { id: userId } = req['user'].data;
+
+      if (!userId) {
+        return 'ID_NOT_FOUND';
+      }
+
+      const checkUser = await this.prisma.nguoiDung.findUnique({
+        where: {
+          id: Number(userId),
+        },
+      });
+
+      if (!checkUser) {
+        return 'USER_NOT_FOUND';
+      }
+
+      if (checkUser.role !== 'Admin') {
+        return 'FORBIDDEN';
+      }
+
+      const update = await this.prisma.phong.update({
+        where: {
+          id,
+        },
+        data: {
+          ten_phong,
+          khach,
+          phong_ngu,
+          giuong,
+          phong_tam,
+          mo_ta,
+          gia_tien,
+          may_giat,
+          ban_la,
+          tivi,
+          dieu_hoa,
+          wifi,
+          bep,
+          do_xe,
+          ho_boi,
+          ban_ui,
+        },
+      });
+
+      if (!update) {
+        return 'INTERNAL_SERVER_ERROR';
+      }
+
+      return 'UPDATED';
+    } catch (error) {
+      throw new Error(error.message);
     }
   }
 }

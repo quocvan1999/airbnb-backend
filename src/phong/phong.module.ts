@@ -16,6 +16,9 @@ export class PhongModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
-      .forRoutes({ path: '/phong', method: RequestMethod.POST });
+      .forRoutes(
+        { path: '/phong', method: RequestMethod.POST },
+        { path: '/phong/:id', method: RequestMethod.PUT },
+      );
   }
 }
