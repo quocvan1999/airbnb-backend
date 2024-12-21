@@ -193,4 +193,46 @@ export class PhongController {
       });
     }
   }
+
+  @Get('/:id')
+  @ApiQuery({ name: 'id', required: true, type: Number })
+  async getRoomById(
+    @Query('id') id: number,
+    @Res() res: Response,
+  ): Promise<Response> {
+    try {
+      const room: PhongDto | string = await this.phongService.getRoomById(Number(id));
+
+      if (typeof room === 'string') {
+        switch (room) {
+          case 'NOT_FOUND':
+            return res.status(HttpStatus.NOT_FOUND).json({
+              statusCode: HttpStatus.NOT_FOUND,
+              content: {
+                message: 'Phòng không tồn tại',
+              },
+              timestamp: new Date().toISOString(),
+            });
+          default:
+            break;
+        }
+      } else {
+        return res.status(HttpStatus.OK).json({
+          statusCode: HttpStatus.OK,
+          content: {
+            message: 'Lấy phòng thành công',
+            data: room,
+          },
+          timestamp: new Date().toISOString(),
+        });
+      }
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        content: { message: 'Internal Server Error' },
+        error: error?.message || 'Internal Server Error',
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
 }

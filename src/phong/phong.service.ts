@@ -154,4 +154,22 @@ export class PhongService {
       return 'Internal Server Error';
     }
   }
+
+  async getRoomById(id: number): Promise<PhongDto | string> {
+    try {
+      const room: PhongDto = await this.prisma.phong.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!room) {
+        return 'NOT_FOUND';
+      }
+
+      return room;
+    } catch (error) {
+      return 'Internal Server Error';
+    }
+  }
 }
