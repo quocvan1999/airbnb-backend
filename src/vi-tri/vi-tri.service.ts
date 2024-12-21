@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { ViTriDto } from './dto/vi-tri.dto';
 import { CreateViTriDto } from './dto/create-vi-tri.dto';
+import { UpdateViTriDto } from './dto/update-vi-tri.dto';
 
 @Injectable()
 export class ViTriService {
@@ -79,6 +80,55 @@ export class ViTriService {
       }
 
       return 'CREATED';
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async updateLocation(
+    body: UpdateViTriDto,
+    id: number,
+    req: Request,
+  ): Promise<string> {
+    try {
+      const { ten_vi_tri, tinh_thanh, quoc_gia } = body;
+
+      const { id: userId } = req['user'].data;
+
+      if (!userId) {
+        return 'ID_NOT_FOUND';
+      }
+
+      const checkUser = await this.prisma.nguoiDung.findUnique({
+        where: {
+          id: Number(userId),
+        },
+      });
+
+      if (!checkUser) {
+        return 'USER_NOT_FOUND';
+      }
+
+      if (checkUser.role !== 'Admin') {
+        return 'FORBIDDEN';
+      }
+
+      const update = await this.prisma.viTri.update({
+        where: {
+          id,
+        },
+        data: {
+          ten_vi_tri,
+          tinh_thanh,
+          quoc_gia,
+        },
+      });
+
+      if (!update) {
+        return 'INTERNAL_SERVER_ERROR';
+      }
+
+      return 'UPDATED';
     } catch (error) {
       throw new Error(error.message);
     }

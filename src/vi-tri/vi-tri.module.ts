@@ -16,6 +16,9 @@ export class ViTriModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
-      .forRoutes({ path: '/vi-tri', method: RequestMethod.POST });
+      .forRoutes(
+        { path: '/vi-tri', method: RequestMethod.POST },
+        { path: '/vi-tri/:id', method: RequestMethod.PUT },
+      );
   }
 }
