@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
   Query,
   Req,
   Res,
@@ -15,6 +16,7 @@ import { NguoiDungService } from './nguoi-dung.service';
 import { ApiHeader, ApiParam, ApiQuery } from '@nestjs/swagger';
 import { NguoiDungDto } from './dto/nguoi-dung.dto';
 import { CreateNguoiDungDto } from './dto/create-nguoi-dung.dto';
+import { UpdateNguoiDungDto } from './dto/update-nguoi-dung.dto';
 
 @Controller('nguoi-dung')
 export class NguoiDungController {
@@ -240,6 +242,54 @@ export class NguoiDungController {
           },
           timestamp: new Date().toISOString(),
         });
+      }
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        content: { message: 'Internal Server Error' },
+        error: error?.message || 'Internal Server Error',
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
+
+  @Put(':id')
+  @ApiParam({ name: 'id', type: Number })
+  @ApiHeader({ name: 'token', required: true })
+  async updateUser(
+    @Body() body: UpdateNguoiDungDto,
+    @Param('id') id: string,
+    @Res() res: Response,
+  ): Promise<Response> {
+    try {
+      const update: string = await this.nguoiDungService.updateUser(
+        body,
+        Number(id),
+      );
+
+      switch (update) {
+        case 'NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Người dùng không tồn tại',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'INTERNAL_SERVER_ERROR':
+          return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            content: { message: 'Cập nhật tài khoản không thành công' },
+            timestamp: new Date().toISOString(),
+          });
+        case 'UPDATED':
+          return res.status(HttpStatus.OK).json({
+            statusCode: HttpStatus.OK,
+            content: { message: 'Cập nhật tài khoản thành công' },
+            timestamp: new Date().toISOString(),
+          });
+        default:
+          break;
       }
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({

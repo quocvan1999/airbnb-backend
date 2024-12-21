@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { NguoiDungDto } from './dto/nguoi-dung.dto';
 import { CreateNguoiDungDto } from './dto/create-nguoi-dung.dto';
 import * as bcrypt from 'bcrypt';
+import { UpdateNguoiDungDto } from './dto/update-nguoi-dung.dto';
 
 @Injectable()
 export class NguoiDungService {
@@ -159,6 +160,39 @@ export class NguoiDungService {
       }
 
       return user;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async updateUser(body: UpdateNguoiDungDto, id: number): Promise<string> {
+    try {
+      const { name, phone, birth_day, gender, role } = body;
+
+      const checkUser = await this.prisma.nguoiDung.findUnique({
+        where: { id },
+      });
+
+      if (!checkUser) {
+        return 'NOT_FOUND';
+      }
+
+      const updateUser = await this.prisma.nguoiDung.update({
+        where: { id },
+        data: {
+          name,
+          phone,
+          birth_day,
+          gender,
+          role,
+        },
+      });
+
+      if (!updateUser) {
+        return 'INTERNAL_SERVER_ERROR';
+      }
+
+      return 'UPDATED';
     } catch (error) {
       throw new Error(error.message);
     }

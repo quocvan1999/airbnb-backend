@@ -21,6 +21,7 @@ export class NguoiDungModule implements NestModule {
         { path: '/nguoi-dung', method: RequestMethod.GET },
         { path: '/nguoi-dung', method: RequestMethod.POST },
         { path: '/nguoi-dung/:id', method: RequestMethod.DELETE },
+        { path: '/nguoi-dung/:id', method: RequestMethod.PUT },
       );
   }
 }
