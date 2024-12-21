@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { BinhLuanModule } from './binh-luan/binh-luan.module';
 import { DatPhongModule } from './dat-phong/dat-phong.module';
 import { NguoiDungModule } from './nguoi-dung/nguoi-dung.module';
+import { PhongModule } from './phong/phong.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { NguoiDungModule } from './nguoi-dung/nguoi-dung.module';
     BinhLuanModule,
     DatPhongModule,
     NguoiDungModule,
+    PhongModule,
   ],
   controllers: [],
   providers: [],

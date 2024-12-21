@@ -38,7 +38,13 @@ export class NguoiDungService {
         return 'NOT_FOUND';
       }
 
-      const total: number = await this.prisma.nguoiDung.count();
+      const total: number = await this.prisma.nguoiDung.count({
+        where: {
+          name: {
+            contains: keyword,
+          },
+        },
+      });
 
       return { data: users, total };
     } catch (error) {
