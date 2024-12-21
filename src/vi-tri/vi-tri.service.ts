@@ -85,6 +85,24 @@ export class ViTriService {
     }
   }
 
+  async getDetailLocation(id: number): Promise<ViTriDto | string> {
+    try {
+      const location: ViTriDto = await this.prisma.viTri.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!location) {
+        return 'NOT_FOUND';
+      }
+
+      return location;
+    } catch (error) {
+      return 'Internal Server Error';
+    }
+  }
+
   async updateLocation(
     body: UpdateViTriDto,
     id: number,

@@ -132,6 +132,44 @@ export class ViTriController {
     }
   }
 
+  @Get('/:id')
+  async getDetailLocation(
+    @Query('id') id: number,
+    @Res() res: Response,
+  ): Promise<Response> {
+    try {
+      const location: ViTriDto | string =
+        await this.viTriService.getDetailLocation(Number(id));
+
+      switch (location) {
+        case 'NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Vị trí không tồn tại',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        default:
+          return res.status(HttpStatus.OK).json({
+            statusCode: HttpStatus.OK,
+            content: {
+              message: 'Lấy thông tin vị trí thành công',
+              data: location,
+            },
+            timestamp: new Date().toISOString(),
+          });
+      }
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        content: { message: 'Internal Server Error' },
+        error: error?.message || 'Internal Server Error',
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
+
   @Put('/:id')
   @ApiHeader({ name: 'token', required: true })
   async updateLocation(
