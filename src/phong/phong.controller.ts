@@ -128,4 +128,69 @@ export class PhongController {
       });
     }
   }
+
+  @Get('/lay-phong-theo-vi-tri')
+  @ApiQuery({ name: 'maViTri', required: true, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  async getRoomsByLocation(
+    @Query('maViTri') maViTri: number,
+    @Query('limit') limit: number,
+    @Query('page') page: number,
+    @Res() res: Response,
+  ): Promise<Response> {
+    try {
+      const formatPage = page ? Number(page) : 1;
+      const formatSize = limit ? Number(limit) : 10;
+
+      const rooms: { data: PhongDto[]; total: number } | string =
+        await this.phongService.getRoomsByLocation(
+          formatPage,
+          formatSize,
+          Number(maViTri),
+        );
+
+      if (typeof rooms === 'string') {
+        switch (rooms) {
+          case 'NOT_FOUND':
+            return res.status(HttpStatus.NOT_FOUND).json({
+              statusCode: HttpStatus.NOT_FOUND,
+              content: {
+                message: 'Lấy danh sách phòng không thành công',
+              },
+              timestamp: new Date().toISOString(),
+            });
+          case 'LOCATION_NOT_FOUND':
+            return res.status(HttpStatus.NOT_FOUND).json({
+              statusCode: HttpStatus.NOT_FOUND,
+              content: {
+                message: 'Vị trí không tồn tại',
+              },
+              timestamp: new Date().toISOString(),
+            });
+          default:
+            break;
+        }
+      } else {
+        return res.status(HttpStatus.OK).json({
+          statusCode: HttpStatus.OK,
+          content: {
+            message: 'Lấy danh sách phòng thành công',
+            data: rooms.data,
+            total: rooms.total,
+            page: formatPage,
+            limit: formatSize,
+          },
+          timestamp: new Date().toISOString(),
+        });
+      }
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        content: { message: 'Internal Server Error' },
+        error: error?.message || 'Internal Server Error',
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
 }

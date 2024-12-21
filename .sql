@@ -39,7 +39,9 @@ CREATE TABLE Phong (
     do_xe BOOLEAN,
     ho_boi BOOLEAN,
     ban_ui BOOLEAN,
-    hinh_anh VARCHAR(255)
+    hinh_anh VARCHAR(255),
+    ma_vi_tri INT,
+    FOREIGN KEY (ma_vi_tri) REFERENCES ViTri(id) ON DELETE CASCADE
 );
 
 CREATE TABLE ViTri (
@@ -89,17 +91,17 @@ INSERT INTO DatPhong (id, ma_phong, ngay_den, ngay_di, so_luong_khach, ma_nguoi_
 (10, 10, '2024-12-10 14:00:00', '2024-12-14 11:00:00', 1, 10);
 
 -- Thêm dữ liệu mẫu vào Phong
-INSERT INTO Phong (id, ten_phong, khach, phong_ngu, giuong, phong_tam, mo_ta, gia_tien, may_giat, ban_la, tivi, dieu_hoa, wifi, bep, do_xe, ho_boi, ban_ui, hinh_anh) VALUES 
-(1, 'Phong1', 2, 1, 1, 1, 'Mo ta phong 1', 1000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room1.jpg'),
-(2, 'Phong2', 3, 2, 2, 2, 'Mo ta phong 2', 2000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room2.jpg'),
-(3, 'Phong3', 4, 3, 3, 3, 'Mo ta phong 3', 3000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room3.jpg'),
-(4, 'Phong4', 2, 1, 1, 1, 'Mo ta phong 4', 1500000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room4.jpg'),
-(5, 'Phong5', 2, 1, 1, 1, 'Mo ta phong 5', 1000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room5.jpg'),
-(6, 'Phong6', 3, 2, 2, 2, 'Mo ta phong 6', 2000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room6.jpg'),
-(7, 'Phong7', 4, 3, 3, 3, 'Mo ta phong 7', 3000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room7.jpg'),
-(8, 'Phong8', 2, 1, 1, 1, 'Mo ta phong 8', 1500000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room8.jpg'),
-(9, 'Phong9', 2, 1, 1, 1, 'Mo ta phong 9', 1000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room9.jpg'),
-(10, 'Phong10', 3, 2, 2, 2, 'Mo ta phong 10', 2000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room10.jpg');
+INSERT INTO Phong (id, ten_phong, khach, phong_ngu, giuong, phong_tam, mo_ta, gia_tien, may_giat, ban_la, tivi, dieu_hoa, wifi, bep, do_xe, ho_boi, ban_ui, hinh_anh, ma_vi_tri) VALUES 
+(1, 'Phong1', 2, 1, 1, 1, 'Mo ta phong 1', 1000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room1.jpg', 1),
+(2, 'Phong2', 3, 2, 2, 2, 'Mo ta phong 2', 2000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room2.jpg', 2),
+(3, 'Phong3', 4, 3, 3, 3, 'Mo ta phong 3', 3000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room3.jpg', 3),
+(4, 'Phong4', 2, 1, 1, 1, 'Mo ta phong 4', 1500000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room4.jpg', 4),
+(5, 'Phong5', 2, 1, 1, 1, 'Mo ta phong 5', 1000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room5.jpg', 5),
+(6, 'Phong6', 3, 2, 2, 2, 'Mo ta phong 6', 2000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room6.jpg', 6),
+(7, 'Phong7', 4, 3, 3, 3, 'Mo ta phong 7', 3000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room7.jpg', 7),
+(8, 'Phong8', 2, 1, 1, 1, 'Mo ta phong 8', 1500000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room8.jpg', 8),
+(9, 'Phong9', 2, 1, 1, 1, 'Mo ta phong 9', 1000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room9.jpg', 9),
+(10, 'Phong10', 3, 2, 2, 2, 'Mo ta phong 10', 2000000, true, true, true, true, true, true, true, true, true, '/public/imgs/rooms/room10.jpg', 10);
 
 -- Thêm dữ liệu mẫu vào ViTri (tiếp tục)
 INSERT INTO ViTri (id, ten_vi_tri, tinh_thanh, quoc_gia, hinh_anh) VALUES 
@@ -126,4 +128,3 @@ INSERT INTO BinhLuan (id, ma_phong, ma_nguoi_binh_luan, ngay_binh_luan, noi_dung
 (8, 8, 8, '2024-12-08 12:00:00', 'Binh luan 8', 4),
 (9, 9, 9, '2024-12-09 12:00:00', 'Binh luan 9', 3),
 (10, 10, 10, '2024-12-10 12:00:00', 'Binh luan 10', 5);
-

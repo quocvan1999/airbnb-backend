@@ -113,4 +113,45 @@ export class PhongService {
       throw new Error(error.message);
     }
   }
+
+  async getRoomsByLocation(
+    page: number,
+    limit: number,
+    maViTri: number,
+  ): Promise<{ data: PhongDto[]; total: number } | string> {
+    try {
+
+      const checkLocation = await this.prisma.viTri.findUnique({
+        where: {
+          id: maViTri,
+        },
+      })
+
+      if (!checkLocation) {
+        return 'LOCATION_NOT_FOUND';
+      }
+
+      const rooms: PhongDto[] = await this.prisma.phong.findMany({
+        take: limit,
+        skip: (page - 1) * limit,
+        where: {
+          ma_vi_tri: maViTri,
+        },
+      });
+
+      if (!rooms) {
+        return 'NOT_FOUND';
+      }
+
+      const total: number = await this.prisma.phong.count({
+        where: {
+          ma_vi_tri: maViTri,
+        },
+      });
+
+      return { data: rooms, total };
+    } catch (error) {
+      return 'Internal Server Error';
+    }
+  }
 }
