@@ -319,7 +319,7 @@ export class NguoiDungController {
     required: true,
   })
   @ApiHeader({ name: 'token', required: true })
-  @UseInterceptors(FileInterceptor('hinhAnh', { storage: storage('avatar') }))
+  @UseInterceptors(FileInterceptor('hinhAnh', { storage: storage('avatars') }))
   async uploadThumbnail(
     @UploadedFile() file: Express.Multer.File,
     @Req() req: Request,
