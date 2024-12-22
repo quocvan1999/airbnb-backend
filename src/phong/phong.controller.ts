@@ -9,13 +9,18 @@ import {
   Query,
   Req,
   Res,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { PhongService } from './phong.service';
-import { ApiHeader, ApiQuery } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiHeader, ApiQuery } from '@nestjs/swagger';
 import { PhongDto } from './dto/phong.dto';
 import { Response } from 'express';
 import { CreatePhongDto } from './dto/create-phong.dto';
 import { UpdatePhongDto } from './dto/update-phong.dto';
+import { FileUploadDto } from 'src/shared/dto/upload.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { storage } from 'src/shared/upload.service';
 
 @Controller('phong')
 export class PhongController {
@@ -352,6 +357,61 @@ export class PhongController {
           return res.status(HttpStatus.OK).json({
             statusCode: HttpStatus.OK,
             content: { message: 'Xóa phòng thành công' },
+            timestamp: new Date().toISOString(),
+          });
+        default:
+          break;
+      }
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        content: { message: 'Internal Server Error' },
+        error: error?.message || 'Internal Server Error',
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
+
+  @Post('/upload-hinh-phong')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    type: FileUploadDto,
+    required: true,
+  })
+  @UseInterceptors(
+    FileInterceptor('hinhAnh', { storage: storage('rooms') }),
+  )
+  @ApiQuery({ name: 'maPhong', required: true, type: Number })
+  async uploadThumbnail(
+    @UploadedFile() file: Express.Multer.File,
+    @Query('maPhong') maPhong: number,
+    @Res() res: Response,
+  ): Promise<Response> {
+    try {
+      const location: string = await this.phongService.uploadImage(
+        Number(maPhong),
+        file,
+      );
+
+      switch (location) {
+        case 'NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Phòng không tồn tại',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'INTERNAL_SERVER_ERROR':
+          return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            content: { message: 'Upload ảnh phòng không thành công' },
+            timestamp: new Date().toISOString(),
+          });
+        case 'UPLOADED':
+          return res.status(HttpStatus.OK).json({
+            statusCode: HttpStatus.OK,
+            content: { message: 'Upload ảnh phòng thành công' },
             timestamp: new Date().toISOString(),
           });
         default:

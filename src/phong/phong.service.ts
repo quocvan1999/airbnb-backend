@@ -3,6 +3,7 @@ import { Phong, PrismaClient } from '@prisma/client';
 import { PhongDto } from './dto/phong.dto';
 import { CreatePhongDto } from './dto/create-phong.dto';
 import { UpdatePhongDto } from './dto/update-phong.dto';
+import { join } from 'path';
 
 @Injectable()
 export class PhongService {
@@ -285,6 +286,40 @@ export class PhongService {
       }
 
       return 'DELETED';
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async uploadImage(id: number, file: Express.Multer.File): Promise<string> {
+    try {
+      const filePath = join('public', 'imgs', 'locations', file.filename);
+      const normalizedPath = filePath.replace(/\\/g, '/');
+
+      const room: PhongDto = await this.prisma.phong.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!room) {
+        return 'NOT_FOUND';
+      }
+
+      const update = await this.prisma.phong.update({
+        where: {
+          id,
+        },
+        data: {
+          hinh_anh: normalizedPath,
+        },
+      });
+
+      if (!update) {
+        return 'INTERNAL_SERVER_ERROR';
+      }
+
+      return 'UPLOADED';
     } catch (error) {
       throw new Error(error.message);
     }
