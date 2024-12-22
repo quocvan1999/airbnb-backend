@@ -378,22 +378,45 @@ export class PhongController {
     type: FileUploadDto,
     required: true,
   })
-  @UseInterceptors(
-    FileInterceptor('hinhAnh', { storage: storage('rooms') }),
-  )
+  @UseInterceptors(FileInterceptor('hinhAnh', { storage: storage('rooms') }))
+  @ApiHeader({ name: 'token', required: true })
   @ApiQuery({ name: 'maPhong', required: true, type: Number })
   async uploadThumbnail(
     @UploadedFile() file: Express.Multer.File,
     @Query('maPhong') maPhong: number,
+    @Req() req: Request,
     @Res() res: Response,
   ): Promise<Response> {
     try {
       const location: string = await this.phongService.uploadImage(
         Number(maPhong),
         file,
+        req,
       );
 
       switch (location) {
+        case 'ID_NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Không lấy được id người dùng',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'USER_NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Người dùng không tồn tại',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'FORBIDDEN':
+          return res.status(HttpStatus.FORBIDDEN).json({
+            statusCode: HttpStatus.FORBIDDEN,
+            content: { message: 'Chỉ có Admin mới được cập nhật hình ảnh' },
+            timestamp: new Date().toISOString(),
+          });
         case 'NOT_FOUND':
           return res.status(HttpStatus.NOT_FOUND).json({
             statusCode: HttpStatus.NOT_FOUND,
@@ -405,13 +428,13 @@ export class PhongController {
         case 'INTERNAL_SERVER_ERROR':
           return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
             statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-            content: { message: 'Upload ảnh phòng không thành công' },
+            content: { message: 'Cập nhật hình ảnh không thành công' },
             timestamp: new Date().toISOString(),
           });
-        case 'UPLOADED':
+        case 'UPLOAD':
           return res.status(HttpStatus.OK).json({
             statusCode: HttpStatus.OK,
-            content: { message: 'Upload ảnh phòng thành công' },
+            content: { message: 'Cập nhật hình ảnh thành công' },
             timestamp: new Date().toISOString(),
           });
         default:

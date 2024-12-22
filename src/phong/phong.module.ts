@@ -20,6 +20,7 @@ export class PhongModule implements NestModule {
         { path: '/phong', method: RequestMethod.POST },
         { path: '/phong/:id', method: RequestMethod.PUT },
         { path: '/phong/:id', method: RequestMethod.DELETE },
+        { path: '/phong/upload-hinh-phong', method: RequestMethod.POST },
       );
   }
 }

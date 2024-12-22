@@ -291,10 +291,34 @@ export class PhongService {
     }
   }
 
-  async uploadImage(id: number, file: Express.Multer.File): Promise<string> {
+  async uploadImage(
+    id: number,
+    file: Express.Multer.File,
+    req: Request,
+  ): Promise<string> {
     try {
       const filePath = join('public', 'imgs', 'rooms', file.filename);
       const normalizedPath = filePath.replace(/\\/g, '/');
+
+      const { id: userId } = req['user'].data;
+
+      if (!userId) {
+        return 'ID_NOT_FOUND';
+      }
+
+      const checkUser = await this.prisma.nguoiDung.findUnique({
+        where: {
+          id: Number(userId),
+        },
+      });
+
+      if (!checkUser) {
+        return 'USER_NOT_FOUND';
+      }
+
+      if (checkUser.role !== 'Admin') {
+        return 'FORBIDDEN';
+      }
 
       const room: PhongDto = await this.prisma.phong.findUnique({
         where: {
@@ -319,7 +343,7 @@ export class PhongService {
         return 'INTERNAL_SERVER_ERROR';
       }
 
-      return 'UPLOADED';
+      return 'UPLOAD';
     } catch (error) {
       throw new Error(error.message);
     }
