@@ -293,7 +293,7 @@ export class PhongService {
 
   async uploadImage(id: number, file: Express.Multer.File): Promise<string> {
     try {
-      const filePath = join('public', 'imgs', 'locations', file.filename);
+      const filePath = join('public', 'imgs', 'rooms', file.filename);
       const normalizedPath = filePath.replace(/\\/g, '/');
 
       const room: PhongDto = await this.prisma.phong.findUnique({

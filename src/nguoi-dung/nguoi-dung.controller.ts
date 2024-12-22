@@ -10,13 +10,24 @@ import {
   Query,
   Req,
   Res,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { NguoiDungService } from './nguoi-dung.service';
-import { ApiHeader, ApiParam, ApiQuery } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiHeader,
+  ApiParam,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { NguoiDungDto } from './dto/nguoi-dung.dto';
 import { CreateNguoiDungDto } from './dto/create-nguoi-dung.dto';
 import { UpdateNguoiDungDto } from './dto/update-nguoi-dung.dto';
+import { FileUploadDto } from 'src/shared/dto/upload.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { storage } from 'src/shared/upload.service';
 
 @Controller('nguoi-dung')
 export class NguoiDungController {
@@ -286,6 +297,64 @@ export class NguoiDungController {
           return res.status(HttpStatus.OK).json({
             statusCode: HttpStatus.OK,
             content: { message: 'Cập nhật tài khoản thành công' },
+            timestamp: new Date().toISOString(),
+          });
+        default:
+          break;
+      }
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        content: { message: 'Internal Server Error' },
+        error: error?.message || 'Internal Server Error',
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
+
+  @Post('/upload-avatar')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    type: FileUploadDto,
+    required: true,
+  })
+  @ApiHeader({ name: 'token', required: true })
+  @UseInterceptors(FileInterceptor('hinhAnh', { storage: storage('avatar') }))
+  async uploadThumbnail(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: Request,
+    @Res() res: Response,
+  ): Promise<Response> {
+    try {
+      const user: string = await this.nguoiDungService.uploadImage(file, req);
+
+      switch (user) {
+        case 'ID_NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Không lấy được id người dùng',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'USER_NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Người dùng không tồn tại',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'INTERNAL_SERVER_ERROR':
+          return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            content: { message: 'Cập nhật ảnh đại diện không thành công' },
+            timestamp: new Date().toISOString(),
+          });
+        case 'UPLOADED':
+          return res.status(HttpStatus.OK).json({
+            statusCode: HttpStatus.OK,
+            content: { message: 'Cập nhật ảnh đại diện thành công' },
             timestamp: new Date().toISOString(),
           });
         default:

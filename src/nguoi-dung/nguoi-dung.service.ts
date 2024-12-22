@@ -4,6 +4,7 @@ import { NguoiDungDto } from './dto/nguoi-dung.dto';
 import { CreateNguoiDungDto } from './dto/create-nguoi-dung.dto';
 import * as bcrypt from 'bcrypt';
 import { UpdateNguoiDungDto } from './dto/update-nguoi-dung.dto';
+import { join } from 'path';
 
 @Injectable()
 export class NguoiDungService {
@@ -201,6 +202,46 @@ export class NguoiDungService {
       }
 
       return 'UPDATED';
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async uploadImage(file: Express.Multer.File, req: Request): Promise<string> {
+    try {
+      const filePath = join('public', 'imgs', 'avatars', file.filename);
+      const normalizedPath = filePath.replace(/\\/g, '/');
+
+      const { id } = req['user'].data;
+
+      if (!id) {
+        return 'ID_NOT_FOUND';
+      }
+
+      const checkUser = await this.prisma.nguoiDung.findUnique({
+        where: {
+          id: Number(id),
+        },
+      });
+
+      if (!checkUser) {
+        return 'USER_NOT_FOUND';
+      }
+
+      const update = await this.prisma.nguoiDung.update({
+        where: {
+          id: Number(id),
+        },
+        data: {
+          avatar: normalizedPath,
+        },
+      });
+
+      if (!update) {
+        return 'INTERNAL_SERVER_ERROR';
+      }
+
+      return 'UPLOADED';
     } catch (error) {
       throw new Error(error.message);
     }
