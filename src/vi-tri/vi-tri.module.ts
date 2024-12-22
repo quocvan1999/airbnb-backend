@@ -21,6 +21,7 @@ export class ViTriModule implements NestModule {
         { path: '/vi-tri', method: RequestMethod.POST },
         { path: '/vi-tri/:id', method: RequestMethod.PUT },
         { path: '/vi-tri/:id', method: RequestMethod.DELETE },
+        { path: '/vi-tri/upload-hinh-vi-tri', method: RequestMethod.POST },
       );
     // consumer.apply(FileValidationMiddleware).forRoutes({
     //   path: '/vi-tri/upload-hinh-vi-tri',

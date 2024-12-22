@@ -308,19 +308,44 @@ export class ViTriController {
   @UseInterceptors(
     FileInterceptor('hinhAnh', { storage: storage('locations') }),
   )
+  @ApiHeader({ name: 'token', required: true })
   @ApiQuery({ name: 'maViTri', required: true, type: Number })
   async uploadThumbnail(
     @UploadedFile() file: Express.Multer.File,
     @Query('maViTri') maViTri: number,
+    @Req() req: Request,
     @Res() res: Response,
   ): Promise<Response> {
     try {
       const location: string = await this.viTriService.uploadImage(
         Number(maViTri),
         file,
+        req,
       );
 
       switch (location) {
+        case 'ID_NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Không lấy được id người dùng',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'USER_NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Người dùng không tồn tại',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'FORBIDDEN':
+          return res.status(HttpStatus.FORBIDDEN).json({
+            statusCode: HttpStatus.FORBIDDEN,
+            content: { message: 'Chỉ có Admin mới được thêm hình ảnh' },
+            timestamp: new Date().toISOString(),
+          });
         case 'NOT_FOUND':
           return res.status(HttpStatus.NOT_FOUND).json({
             statusCode: HttpStatus.NOT_FOUND,
@@ -332,13 +357,13 @@ export class ViTriController {
         case 'INTERNAL_SERVER_ERROR':
           return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
             statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-            content: { message: 'Upload ảnh vị trí không thành công' },
+            content: { message: 'Thêm hình ảnh không thành công' },
             timestamp: new Date().toISOString(),
           });
-        case 'UPLOADED':
+        case 'UPDATED':
           return res.status(HttpStatus.OK).json({
             statusCode: HttpStatus.OK,
-            content: { message: 'Upload ảnh vị trí thành công' },
+            content: { message: 'Thêm hình ảnh thành công' },
             timestamp: new Date().toISOString(),
           });
         default:
