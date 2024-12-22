@@ -9,13 +9,18 @@ import {
   Query,
   Req,
   Res,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ViTriService } from './vi-tri.service';
-import { ApiHeader, ApiQuery } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiHeader, ApiQuery } from '@nestjs/swagger';
 import { ViTriDto } from './dto/vi-tri.dto';
 import { Response } from 'express';
 import { CreateViTriDto } from './dto/create-vi-tri.dto';
 import { UpdateViTriDto } from './dto/update-vi-tri.dto';
+import { FileUploadDto } from 'src/shared/dto/upload.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { storage } from 'src/shared/upload.service';
 
 @Controller('vi-tri')
 export class ViTriController {
@@ -279,6 +284,61 @@ export class ViTriController {
           return res.status(HttpStatus.OK).json({
             statusCode: HttpStatus.OK,
             content: { message: 'Xóa vị trí thành công' },
+            timestamp: new Date().toISOString(),
+          });
+        default:
+          break;
+      }
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        content: { message: 'Internal Server Error' },
+        error: error?.message || 'Internal Server Error',
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }
+
+  @Post('/upload-hinh-vi-tri')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    type: FileUploadDto,
+    required: true,
+  })
+  @UseInterceptors(
+    FileInterceptor('hinhAnh', { storage: storage('locations') }),
+  )
+  @ApiQuery({ name: 'maViTri', required: true, type: Number })
+  async uploadThumbnail(
+    @UploadedFile() file: Express.Multer.File,
+    @Query('maViTri') maViTri: number,
+    @Res() res: Response,
+  ): Promise<Response> {
+    try {
+      const location: string = await this.viTriService.uploadImage(
+        Number(maViTri),
+        file,
+      );
+
+      switch (location) {
+        case 'NOT_FOUND':
+          return res.status(HttpStatus.NOT_FOUND).json({
+            statusCode: HttpStatus.NOT_FOUND,
+            content: {
+              message: 'Vị trí không tồn tại',
+            },
+            timestamp: new Date().toISOString(),
+          });
+        case 'INTERNAL_SERVER_ERROR':
+          return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+            statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+            content: { message: 'Upload ảnh vị trí không thành công' },
+            timestamp: new Date().toISOString(),
+          });
+        case 'UPLOADED':
+          return res.status(HttpStatus.OK).json({
+            statusCode: HttpStatus.OK,
+            content: { message: 'Upload ảnh vị trí thành công' },
             timestamp: new Date().toISOString(),
           });
         default:

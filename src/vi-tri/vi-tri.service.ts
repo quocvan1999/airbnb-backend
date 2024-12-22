@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { ViTriDto } from './dto/vi-tri.dto';
 import { CreateViTriDto } from './dto/create-vi-tri.dto';
 import { UpdateViTriDto } from './dto/update-vi-tri.dto';
+import { join } from 'path';
 
 @Injectable()
 export class ViTriService {
@@ -185,6 +186,40 @@ export class ViTriService {
       }
 
       return 'DELETED';
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
+  async uploadImage(id: number, file: Express.Multer.File): Promise<string> {
+    try {
+      const filePath = join('public', 'imgs', 'locations', file.filename);
+      const normalizedPath = filePath.replace(/\\/g, '/');
+
+      const location: ViTriDto = await this.prisma.viTri.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (!location) {
+        return 'NOT_FOUND';
+      }
+
+      const update = await this.prisma.viTri.update({
+        where: {
+          id,
+        },
+        data: {
+          hinh_anh: normalizedPath,
+        },
+      });
+
+      if (!update) {
+        return 'INTERNAL_SERVER_ERROR';
+      }
+
+      return 'UPLOADED';
     } catch (error) {
       throw new Error(error.message);
     }
