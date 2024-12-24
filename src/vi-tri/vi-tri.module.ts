@@ -7,7 +7,7 @@ import {
 import { ViTriService } from './vi-tri.service';
 import { ViTriController } from './vi-tri.controller';
 import { AuthMiddleware } from 'src/middlewares/auth.middleware';
-import { FileValidationMiddleware } from 'src/middlewares/file-validation.middleware';
+// import { FileValidationMiddleware } from 'src/middlewares/file-validation.middleware';
 
 @Module({
   controllers: [ViTriController],
