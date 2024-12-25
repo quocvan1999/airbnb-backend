@@ -4,6 +4,7 @@ import { ViTriDto } from './dto/vi-tri.dto';
 import { CreateViTriDto } from './dto/create-vi-tri.dto';
 import { UpdateViTriDto } from './dto/update-vi-tri.dto';
 import { join } from 'path';
+import { unlink } from 'fs/promises';
 
 @Injectable()
 export class ViTriService {
@@ -200,6 +201,7 @@ export class ViTriService {
       const { id: userId } = req['user'].data;
 
       if (!userId) {
+        await unlink(file.path);
         return 'ID_NOT_FOUND';
       }
 
@@ -210,10 +212,12 @@ export class ViTriService {
       });
 
       if (!checkUser) {
+        await unlink(file.path);
         return 'USER_NOT_FOUND';
       }
 
       if (checkUser.role !== 'Admin') {
+        await unlink(file.path);
         return 'FORBIDDEN';
       }
 
@@ -224,6 +228,7 @@ export class ViTriService {
       });
 
       if (!location) {
+        await unlink(file.path);
         return 'NOT_FOUND';
       }
 
@@ -237,6 +242,7 @@ export class ViTriService {
       });
 
       if (!update) {
+        await unlink(file.path);
         return 'INTERNAL_SERVER_ERROR';
       }
 

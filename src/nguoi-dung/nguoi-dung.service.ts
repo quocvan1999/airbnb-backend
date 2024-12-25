@@ -5,6 +5,7 @@ import { CreateNguoiDungDto } from './dto/create-nguoi-dung.dto';
 import * as bcrypt from 'bcrypt';
 import { UpdateNguoiDungDto } from './dto/update-nguoi-dung.dto';
 import { join } from 'path';
+import { unlink } from 'fs/promises';
 
 @Injectable()
 export class NguoiDungService {
@@ -212,6 +213,7 @@ export class NguoiDungService {
       const { id } = req['user'].data;
 
       if (!id) {
+        await unlink(file.path);
         return 'ID_NOT_FOUND';
       }
 
@@ -222,6 +224,7 @@ export class NguoiDungService {
       });
 
       if (!checkUser) {
+        await unlink(file.path);
         return 'USER_NOT_FOUND';
       }
 
@@ -235,6 +238,7 @@ export class NguoiDungService {
       });
 
       if (!update) {
+        await unlink(file.path);
         return 'INTERNAL_SERVER_ERROR';
       }
 

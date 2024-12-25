@@ -4,6 +4,7 @@ import { PhongDto } from './dto/phong.dto';
 import { CreatePhongDto } from './dto/create-phong.dto';
 import { UpdatePhongDto } from './dto/update-phong.dto';
 import { join } from 'path';
+import { unlink } from 'fs/promises';
 
 @Injectable()
 export class PhongService {
@@ -300,6 +301,7 @@ export class PhongService {
       const { id: userId } = req['user'].data;
 
       if (!userId) {
+        await unlink(file.path);
         return 'ID_NOT_FOUND';
       }
 
@@ -310,10 +312,12 @@ export class PhongService {
       });
 
       if (!checkUser) {
+        await unlink(file.path);
         return 'USER_NOT_FOUND';
       }
 
       if (checkUser.role !== 'Admin') {
+        await unlink(file.path);
         return 'FORBIDDEN';
       }
 
@@ -324,6 +328,7 @@ export class PhongService {
       });
 
       if (!room) {
+        await unlink(file.path);
         return 'NOT_FOUND';
       }
 
@@ -337,6 +342,7 @@ export class PhongService {
       });
 
       if (!update) {
+        await unlink(file.path);
         return 'INTERNAL_SERVER_ERROR';
       }
 
