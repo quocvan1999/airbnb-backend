@@ -197,9 +197,6 @@ export class ViTriService {
     req: Request,
   ): Promise<string> {
     try {
-      const filePath = join('public', 'imgs', 'locations', file.filename);
-      const normalizedPath = filePath.replace(/\\/g, '/');
-
       const { id: userId } = req['user'].data;
 
       if (!userId) {
@@ -235,7 +232,7 @@ export class ViTriService {
           id,
         },
         data: {
-          hinh_anh: normalizedPath,
+          hinh_anh: file.path,
         },
       });
 

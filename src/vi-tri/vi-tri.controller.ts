@@ -21,6 +21,7 @@ import { UpdateViTriDto } from './dto/update-vi-tri.dto';
 import { FileUploadDto } from 'src/shared/dto/upload.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storage } from 'src/shared/upload.service';
+import { FileValidationInterceptor } from 'src/middlewares/upload.middleware';
 
 @Controller('vi-tri')
 export class ViTriController {
@@ -306,7 +307,8 @@ export class ViTriController {
     required: true,
   })
   @UseInterceptors(
-    FileInterceptor('hinhAnh', { storage: storage('locations') }),
+    FileInterceptor('hinhAnh', { storage: storage() }),
+    new FileValidationInterceptor('./public/imgs/locations'),
   )
   @ApiHeader({ name: 'token', required: true })
   @ApiQuery({ name: 'maViTri', required: true, type: Number })

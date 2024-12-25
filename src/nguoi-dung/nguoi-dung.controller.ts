@@ -28,6 +28,7 @@ import { UpdateNguoiDungDto } from './dto/update-nguoi-dung.dto';
 import { FileUploadDto } from 'src/shared/dto/upload.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storage } from 'src/shared/upload.service';
+import { FileValidationInterceptor } from 'src/middlewares/upload.middleware';
 
 @Controller('nguoi-dung')
 export class NguoiDungController {
@@ -319,7 +320,10 @@ export class NguoiDungController {
     required: true,
   })
   @ApiHeader({ name: 'token', required: true })
-  @UseInterceptors(FileInterceptor('hinhAnh', { storage: storage('avatars') }))
+  @UseInterceptors(
+      FileInterceptor('hinhAnh', { storage: storage() }),
+      new FileValidationInterceptor('./public/imgs/avatars'),
+    )
   async uploadThumbnail(
     @UploadedFile() file: Express.Multer.File,
     @Req() req: Request,

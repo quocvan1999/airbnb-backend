@@ -209,9 +209,6 @@ export class NguoiDungService {
 
   async uploadImage(file: Express.Multer.File, req: Request): Promise<string> {
     try {
-      const filePath = join('public', 'imgs', 'avatars', file.filename);
-      const normalizedPath = filePath.replace(/\\/g, '/');
-
       const { id } = req['user'].data;
 
       if (!id) {
@@ -233,7 +230,7 @@ export class NguoiDungService {
           id: Number(id),
         },
         data: {
-          avatar: normalizedPath,
+          avatar: file.path,
         },
       });
 

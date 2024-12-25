@@ -297,9 +297,6 @@ export class PhongService {
     req: Request,
   ): Promise<string> {
     try {
-      const filePath = join('public', 'imgs', 'rooms', file.filename);
-      const normalizedPath = filePath.replace(/\\/g, '/');
-
       const { id: userId } = req['user'].data;
 
       if (!userId) {
@@ -335,7 +332,7 @@ export class PhongService {
           id,
         },
         data: {
-          hinh_anh: normalizedPath,
+          hinh_anh: file.path,
         },
       });
 

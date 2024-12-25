@@ -7,7 +7,6 @@ import {
 import { ViTriService } from './vi-tri.service';
 import { ViTriController } from './vi-tri.controller';
 import { AuthMiddleware } from 'src/middlewares/auth.middleware';
-// import { FileValidationMiddleware } from 'src/middlewares/file-validation.middleware';
 
 @Module({
   controllers: [ViTriController],
@@ -23,9 +22,5 @@ export class ViTriModule implements NestModule {
         { path: '/vi-tri/:id', method: RequestMethod.DELETE },
         { path: '/vi-tri/upload-hinh-vi-tri', method: RequestMethod.POST },
       );
-    // consumer.apply(FileValidationMiddleware).forRoutes({
-    //   path: '/vi-tri/upload-hinh-vi-tri',
-    //   method: RequestMethod.POST,
-    // });
   }
 }

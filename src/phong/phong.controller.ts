@@ -21,6 +21,7 @@ import { UpdatePhongDto } from './dto/update-phong.dto';
 import { FileUploadDto } from 'src/shared/dto/upload.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storage } from 'src/shared/upload.service';
+import { FileValidationInterceptor } from 'src/middlewares/upload.middleware';
 
 @Controller('phong')
 export class PhongController {
@@ -378,7 +379,10 @@ export class PhongController {
     type: FileUploadDto,
     required: true,
   })
-  @UseInterceptors(FileInterceptor('hinhAnh', { storage: storage('rooms') }))
+  @UseInterceptors(
+      FileInterceptor('hinhAnh', { storage: storage() }),
+      new FileValidationInterceptor('./public/imgs/rooms'),
+    )
   @ApiHeader({ name: 'token', required: true })
   @ApiQuery({ name: 'maPhong', required: true, type: Number })
   async uploadThumbnail(
